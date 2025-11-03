@@ -1,0 +1,27 @@
+body{
+  font-family: Arial, sans-serif;
+  display:flex;
+  justify-content:center;
+  padding:24px;
+  background:#fff;
+  color:#111;
+}
+
+main{
+  width:320px;
+  text-align:center;
+}
+
+#board{
+  display:grid;
+  grid-template-columns:repeat(3, 1fr);
+  gap:8px;
+  margin:16px 0;
+}
+
+.cell{
+  width:100%;
+  padding:18px 0;
+  font-size:28px;
+  cursor:pointer;
+}
