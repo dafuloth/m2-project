@@ -2,7 +2,7 @@ const cells = Array.from(document.querySelectorAll('.cell'));
 const statusEl = document.getElementById('status');
 const restartBtn = document.getElementById('restart');
 
-let boardState = Array(9).fill(''); // '', 'X', or 'O'
+let boardState = Array(9).fill('');
 let currentPlayer = 'X';
 let running = true;
 
@@ -37,7 +37,7 @@ function makeMove(index){
   cell.textContent = currentPlayer;
   cell.disabled = true;
 
-  const win = checkWin(currentPlayer);
+  const win = checkWin(currentPlayer, boardState);
   if (win) {
     running = false;
     statusEl.textContent = `${currentPlayer} wins!`;
@@ -54,11 +54,28 @@ function makeMove(index){
   statusEl.textContent = `${currentPlayer}'s turn`;
 }
 
-function checkWin(player){
-  return WIN_COMBOS.some(combo => combo.every(i => boardState[i] === player));
+function checkWin(player, board = boardState){
+  return WIN_COMBOS.some(combo => combo.every(i => board[i] === player));
 }
 
 cells.forEach(cell => cell.addEventListener('click', handleCellClick));
 restartBtn.addEventListener('click', init);
 
 init();
+
+// Exports required for testing
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = { 
+    init, 
+    handleCellClick, 
+    makeMove, 
+    checkWin, 
+    // Export getters for state variables
+    get boardState() { return boardState; },
+    set boardState(value) { boardState = value; },
+    get currentPlayer() { return currentPlayer; },
+    set currentPlayer(value) { currentPlayer = value; },
+    get running() { return running; },
+    set running(value) { running = value; }
+  };
+}
