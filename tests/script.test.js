@@ -31,24 +31,24 @@ describe("Tic-Tac-Toe Game", () => {
     });
 
     describe("checkWin", () => {
-        test("should return true for horizontal win in first row", () => {
+        test("should return correct array for horizontal win in first row", () => {
             const testBoard = ["X", "X", "X", "", "", "", "", "", ""];
-            expect(game.checkWin("X", testBoard)).toBe(true);
+            expect(game.checkWin("X", testBoard)).toEqual([0, 1, 2]);
         });
 
-        test("should return true for vertical win in first column", () => {
+        test("should return correct array for vertical win in first column", () => {
             const testBoard = ["O", "", "", "O", "", "", "O", "", ""];
-            expect(game.checkWin("O", testBoard)).toBe(true);
+            expect(game.checkWin("O", testBoard)).toEqual([0, 3, 6]);
         });
 
-        test("should return true for diagonal win", () => {
+        test("should return correct array for diagonal win", () => {
             const testBoard = ["X", "", "", "", "X", "", "", "", "X"];
-            expect(game.checkWin("X", testBoard)).toBe(true);
+            expect(game.checkWin("X", testBoard)).toEqual([0, 4, 8]);
         });
 
-        test("should return false for no win", () => {
+        test("should return null for no win (i.e. draw)", () => {
             const testBoard = ["X", "O", "X", "", "", "", "", "", ""];
-            expect(game.checkWin("X", testBoard)).toBe(false);
+            expect(game.checkWin("X", testBoard)).toBeNull();
         });
     });
 

@@ -38,3 +38,7 @@ main {
 .cell.o {
   color: green;
 }
+
+.winning-cell {
+  border: 8px solid yellow;
+}

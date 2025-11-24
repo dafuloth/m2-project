@@ -19,7 +19,7 @@ function init() {
   statusEl.textContent = `${currentPlayer}'s turn`;
   cells.forEach(cell => {
     cell.textContent = '';
-    cell.classList.remove('x', 'o');
+    cell.classList.remove('x', 'o', 'winning-cell');
     cell.disabled = false;
   });
 }
@@ -39,10 +39,11 @@ function makeMove(index) {
   cell.classList.add(currentPlayer.toLowerCase());
   cell.disabled = true;
 
-  const win = checkWin(currentPlayer, boardState);
-  if (win) {
+  const winningCombo = checkWin(currentPlayer, boardState);
+  if (winningCombo) {
     running = false;
     cells.forEach(cell => cell.disabled = true);
+    winningCombo.forEach(index => cells[index].classList.add('winning-cell'));
     statusEl.textContent = `${currentPlayer} wins!`;
     return;
   }
@@ -58,7 +59,7 @@ function makeMove(index) {
 }
 
 function checkWin(player, board = boardState) {
-  return WIN_COMBOS.some(combo => combo.every(i => board[i] === player));
+  return WIN_COMBOS.find(combo => combo.every(i => board[i] === player)) || null;
 }
 
 cells.forEach(cell => cell.addEventListener('click', handleCellClick));
