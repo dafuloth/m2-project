@@ -1,6 +1,10 @@
 const cells = Array.from(document.querySelectorAll('.cell'));
 const statusEl = document.getElementById('status');
 const restartBtn = document.getElementById('restart');
+const modal = document.getElementById('game-over-modal');
+const modalMsg = document.getElementById('game-result');
+const modalRestartBtn = document.getElementById('modal-restart');
+const modalCancelBtn = document.getElementById('modal-cancel');
 
 let boardState = Array(9).fill('');
 let currentPlayer = 'X';
@@ -22,6 +26,7 @@ function init() {
     cell.classList.remove('x', 'o', 'winning-cell');
     cell.disabled = false;
   });
+  modal.close();
 }
 
 function handleCellClick(e) {
@@ -45,12 +50,16 @@ function makeMove(index) {
     cells.forEach(cell => cell.disabled = true);
     winningCombo.forEach(index => cells[index].classList.add('winning-cell'));
     statusEl.textContent = `${currentPlayer} wins!`;
+    modalMsg.textContent = `${currentPlayer} wins!`;
+    modal.showModal();
     return;
   }
 
-  if (boardState.every(cell => cell !== '')) {
+  if (checkDraw()) {
     running = false;
-    statusEl.textContent = `Draw`;
+    statusEl.textContent = "It's a Draw!";
+    modalMsg.textContent = "It's a Draw!";
+    modal.showModal();
     return;
   }
 
@@ -62,8 +71,16 @@ function checkWin(player, board = boardState) {
   return WIN_COMBOS.find(combo => combo.every(i => board[i] === player)) || null;
 }
 
+function checkDraw(board = boardState) {
+  return board.every(cell => cell !== '');
+}
+
 cells.forEach(cell => cell.addEventListener('click', handleCellClick));
 restartBtn.addEventListener('click', init);
+modalRestartBtn.addEventListener('click', init);
+modalCancelBtn.addEventListener("click", () => {
+  modal.close();
+});
 
 init();
 
