@@ -5,6 +5,7 @@ const modal = document.getElementById('game-over-modal');
 const modalMsg = document.getElementById('game-result');
 const modalRestartBtn = document.getElementById('modal-restart');
 const modalCancelBtn = document.getElementById('modal-cancel');
+const winSound = document.getElementById('win-sound');
 
 let boardState = Array(9).fill('');
 let currentPlayer = 'X';
@@ -45,20 +46,24 @@ function makeMove(index) {
   cell.disabled = true;
 
   const winningCombo = checkWin(currentPlayer, boardState);
+
+  const winMsg = `${currentPlayer} wins!`;
   if (winningCombo) {
     running = false;
     cells.forEach(cell => cell.disabled = true);
     winningCombo.forEach(index => cells[index].classList.add('winning-cell'));
-    statusEl.textContent = `${currentPlayer} wins!`;
-    modalMsg.textContent = `${currentPlayer} wins!`;
+    statusEl.textContent = winMsg;
+    modalMsg.textContent = winMsg;
+    winSound.play();
     modal.showModal();
     return;
   }
 
+  const drawMsg = "It's a Draw!";
   if (checkDraw()) {
     running = false;
-    statusEl.textContent = "It's a Draw!";
-    modalMsg.textContent = "It's a Draw!";
+    statusEl.textContent = drawMsg;
+    modalMsg.textContent = drawMsg;
     modal.showModal();
     return;
   }
