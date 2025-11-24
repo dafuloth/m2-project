@@ -40,5 +40,5 @@ main {
 }
 
 .winning-cell {
-  border: 8px solid yellow;
+  box-shadow: inset 0 0 0 8px yellow;
 }
