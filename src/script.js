@@ -7,23 +7,24 @@ let currentPlayer = 'X';
 let running = true;
 
 const WIN_COMBOS = [
-  [0,1,2],[3,4,5],[6,7,8],
-  [0,3,6],[1,4,7],[2,5,8],
-  [0,4,8],[2,4,6]
+  [0, 1, 2], [3, 4, 5], [6, 7, 8],
+  [0, 3, 6], [1, 4, 7], [2, 5, 8],
+  [0, 4, 8], [2, 4, 6]
 ];
 
-function init(){
+function init() {
   boardState.fill('');
   currentPlayer = 'X';
   running = true;
   statusEl.textContent = `${currentPlayer}'s turn`;
   cells.forEach(cell => {
     cell.textContent = '';
+    cell.classList.remove('x', 'o');
     cell.disabled = false;
   });
 }
 
-function handleCellClick(e){
+function handleCellClick(e) {
   const index = Number(e.currentTarget.dataset.index);
   if (!running) return;
   if (boardState[index] !== '') return;
@@ -31,15 +32,17 @@ function handleCellClick(e){
   makeMove(index);
 }
 
-function makeMove(index){
+function makeMove(index) {
   boardState[index] = currentPlayer;
   const cell = cells[index];
   cell.textContent = currentPlayer;
+  cell.classList.add(currentPlayer.toLowerCase());
   cell.disabled = true;
 
   const win = checkWin(currentPlayer, boardState);
   if (win) {
     running = false;
+    cells.forEach(cell => cell.disabled = true);
     statusEl.textContent = `${currentPlayer} wins!`;
     return;
   }
@@ -54,7 +57,7 @@ function makeMove(index){
   statusEl.textContent = `${currentPlayer}'s turn`;
 }
 
-function checkWin(player, board = boardState){
+function checkWin(player, board = boardState) {
   return WIN_COMBOS.some(combo => combo.every(i => board[i] === player));
 }
 
@@ -65,11 +68,11 @@ init();
 
 // Exports required for testing
 if (typeof module !== 'undefined' && module.exports) {
-  module.exports = { 
-    init, 
-    handleCellClick, 
-    makeMove, 
-    checkWin, 
+  module.exports = {
+    init,
+    handleCellClick,
+    makeMove,
+    checkWin,
     // Export getters for state variables
     get boardState() { return boardState; },
     set boardState(value) { boardState = value; },
