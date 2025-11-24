@@ -27,7 +27,9 @@ function init() {
     cell.classList.remove('x', 'o', 'winning-cell');
     cell.disabled = false;
   });
-  modal.close();
+  if (modal) {
+    modal.close();
+  }
 }
 
 function handleCellClick(e) {
@@ -53,9 +55,15 @@ function makeMove(index) {
     cells.forEach(cell => cell.disabled = true);
     winningCombo.forEach(index => cells[index].classList.add('winning-cell'));
     statusEl.textContent = winMsg;
-    modalMsg.textContent = winMsg;
-    winSound.play();
-    modal.showModal();
+    if (modalMsg) {
+      modalMsg.textContent = winMsg;
+    }
+    if (winSound) {
+      winSound.play();
+    }
+    if (modal) {
+      modal.showModal();
+    }
     return;
   }
 
@@ -63,8 +71,12 @@ function makeMove(index) {
   if (checkDraw()) {
     running = false;
     statusEl.textContent = drawMsg;
-    modalMsg.textContent = drawMsg;
-    modal.showModal();
+    if (modalMsg) {
+      modalMsg.textContent = drawMsg;
+    }
+    if (modal) {
+      modal.showModal();
+    }
     return;
   }
 
@@ -82,10 +94,16 @@ function checkDraw(board = boardState) {
 
 cells.forEach(cell => cell.addEventListener('click', handleCellClick));
 restartBtn.addEventListener('click', init);
-modalRestartBtn.addEventListener('click', init);
-modalCancelBtn.addEventListener("click", () => {
-  modal.close();
-});
+
+// Only set up modal event listeners if elements exist (not in test environment)
+if (modalRestartBtn) {
+  modalRestartBtn.addEventListener('click', init);
+}
+if (modalCancelBtn) {
+  modalCancelBtn.addEventListener('click', () => {
+    modal.close();
+  });
+}
 
 init();
 

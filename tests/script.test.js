@@ -132,7 +132,7 @@ describe("Tic-Tac-Toe Game", () => {
             game.makeMove(8);
 
             expect(game.running).toBe(false);
-            expect(statusEl.textContent).toBe("Draw");
+            expect(statusEl.textContent).toBe("It's a Draw!");
         });
     });
 
