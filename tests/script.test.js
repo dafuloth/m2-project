@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-describe("Tic-Tac-Toe Game", () => {
+describe("Noughts & Crosses Game", () => {
     let cells, statusEl, restartBtn, game;
 
     beforeEach(() => {

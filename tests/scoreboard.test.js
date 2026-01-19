@@ -54,14 +54,14 @@ describe("Scoreboard", () => {
         expect(cells[0].textContent).not.toBe("");
 
         // Final expectation: check localStorage
-        expect(window.localStorage.setItem).toHaveBeenCalledWith('tic-tac-toe-history', expect.stringContaining('X wins!'));
+        expect(window.localStorage.setItem).toHaveBeenCalledWith('noughts-and-crosses-history', expect.stringContaining('X wins!'));
     });
 
     test("loadScoreboard should populate the UI from localStorage", () => {
         const mockHistory = [
             { timestamp: "Jan 1, 2026, 10:00 AM", result: "Old Result" }
         ];
-        window.localStorage.setItem('tic-tac-toe-history', JSON.stringify(mockHistory));
+        window.localStorage.setItem('noughts-and-crosses-history', JSON.stringify(mockHistory));
 
         // Trigger load
         game.loadScoreboard();
@@ -83,7 +83,7 @@ describe("Scoreboard", () => {
         expect(rows[1].querySelectorAll("td")[1].textContent).toBe("First Game");
 
         // Verify localStorage contains both
-        const stored = JSON.parse(window.localStorage.getItem('tic-tac-toe-history'));
+        const stored = JSON.parse(window.localStorage.getItem('noughts-and-crosses-history'));
         expect(stored.length).toBe(2);
         expect(stored[0].result).toBe("Second Game");
     });
@@ -104,7 +104,7 @@ describe("Scoreboard", () => {
         game.clearScoreboard();
 
         expect(scoreboardBody.querySelectorAll("tr").length).toBe(0);
-        expect(window.localStorage.removeItem).toHaveBeenCalledWith('tic-tac-toe-history');
-        expect(window.localStorage.getItem('tic-tac-toe-history')).toBeNull();
+        expect(window.localStorage.removeItem).toHaveBeenCalledWith('noughts-and-crosses-history');
+        expect(window.localStorage.getItem('noughts-and-crosses-history')).toBeNull();
     });
 });

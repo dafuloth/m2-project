@@ -9,7 +9,7 @@ const winSound = document.getElementById('win-sound');
 const scoreboardBody = document.getElementById('scoreboard-body');
 const clearHistoryBtn = document.getElementById('clear-history');
 
-const STORAGE_KEY = 'tic-tac-toe-history';
+const STORAGE_KEY = 'noughts-and-crosses-history';
 
 let boardState = Array(9).fill('');
 let currentPlayer = 'X';

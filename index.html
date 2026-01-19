@@ -4,16 +4,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="A responsive Tic-Tac-Toe web application.">
+    <meta name="description" content="A responsive Noughts & Crosses web application.">
     <meta name="theme-color" content="#0f172a">
-    <title>Tic-Tac-Toe</title>
+    <title>Noughts & Crosses</title>
     <link rel="stylesheet" href="assets/style.css" />
 </head>
 
 <body>
     <main>
+
+        <dialog id="welcome-modal">
+            <h2>Welcome to Noughts & Crosses</h2>
+            <p>Would you like to play again?</p>
+            <div class="modal-actions">
+                <button id="modal-restart" class="btn">Yes</button>
+                <button id="modal-cancel" class="btn">No</button>
+            </div>
+        </dialog>
         <div class="game-area">
-            <h1>Tic-Tac-Toe</h1>
+            <h1>Noughts & Crosses</h1>
 
             <!-- Status -->
             <div id="status" aria-live="polite">X's turn</div>
@@ -57,7 +66,6 @@
         </section>
 
         <dialog id="game-over-modal">
-            <h2 id="modal-msg"></h2>
             <p>Would you like to play again?</p>
             <div class="modal-actions">
                 <button id="modal-restart" class="btn">Yes</button>

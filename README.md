@@ -1,6 +1,6 @@
-# Milestone 2 Project: Tic-Tac-Toe game
+# Milestone 2 Project: Noughts & Crosses game
 
-This project implements the game of Tic-Tac-Toe (Noughts & Crosses) in HTML, CSS, and JavaScript.
+This project implements the game of Noughts & Crosses (Noughts & Crosses) in HTML, CSS, and JavaScript.
 
 ## Design Decisions
 
