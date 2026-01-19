@@ -8,6 +8,8 @@ const modalCancelBtn = document.getElementById('modal-cancel');
 const winSound = document.getElementById('win-sound');
 const scoreboardBody = document.getElementById('scoreboard-body');
 
+const STORAGE_KEY = 'tic-tac-toe-history';
+
 let boardState = Array(9).fill('');
 let currentPlayer = 'X';
 let running = true;
@@ -119,14 +121,32 @@ function recordGameResult(result) {
     minute: '2-digit'
   });
 
+  const entry = { timestamp: dateTimeStr, result };
+
+  // Update Scoreboard
+  addResultToTable(entry);
+
+  // Update Storage
+  const history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  history.unshift(entry);
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+}
+
+function addResultToTable(entry) {
+  if (!scoreboardBody) return;
   const row = document.createElement('tr');
   row.innerHTML = `
-    <td>${dateTimeStr}</td>
-    <td>${result}</td>
+    <td>${entry.timestamp}</td>
+    <td>${entry.result}</td>
   `;
-
-  // Prepend so latest results are at the top
   scoreboardBody.insertBefore(row, scoreboardBody.firstChild);
+}
+
+function loadScoreboard() {
+  if (!scoreboardBody) return;
+  const history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  scoreboardBody.innerHTML = '';
+  history.reverse().forEach(entry => addResultToTable(entry));
 }
 
 if (cells && cells.length > 0 && cells[0] !== null) {
@@ -147,6 +167,7 @@ if (modalCancelBtn) {
 }
 
 init();
+loadScoreboard();
 
 // Exports required for testing
 if (typeof module !== 'undefined' && module.exports) {
@@ -156,6 +177,8 @@ if (typeof module !== 'undefined' && module.exports) {
     makeMove,
     checkWin,
     recordGameResult,
+    addResultToTable,
+    loadScoreboard,
     // Export getters for state variables
     get boardState() { return boardState; },
     set boardState(value) { boardState = value; },

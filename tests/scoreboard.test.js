@@ -6,6 +6,24 @@ describe("Scoreboard Functionality", () => {
     let scoreboardBody, game;
 
     beforeEach(() => {
+        // Mock localStorage
+        const localStorageMock = (() => {
+            let store = {};
+            return {
+                getItem: jest.fn(key => store[key] || null),
+                setItem: jest.fn((key, value) => {
+                    store[key] = value.toString();
+                }),
+                clear: jest.fn(() => {
+                    store = {};
+                }),
+                removeItem: jest.fn(key => {
+                    delete store[key];
+                })
+            };
+        })();
+        Object.defineProperty(window, 'localStorage', { value: localStorageMock });
+
         document.body.innerHTML = `
             <div id="status"></div>
             <button id="restart">Restart</button>
@@ -22,7 +40,7 @@ describe("Scoreboard Functionality", () => {
         game = require("../src/script.js");
     });
 
-    test("recordGameResult should add a row to the scoreboard", () => {
+    test("recordGameResult should add a row to the scoreboard and save to localStorage", () => {
         game.recordGameResult("X wins!");
 
         const rows = scoreboardBody.querySelectorAll("tr");
@@ -34,9 +52,26 @@ describe("Scoreboard Functionality", () => {
 
         // Check if the first cell (timestamp) is not empty
         expect(cells[0].textContent).not.toBe("");
+
+        // Final expectation: check localStorage
+        expect(window.localStorage.setItem).toHaveBeenCalledWith('tic-tac-toe-history', expect.stringContaining('X wins!'));
     });
 
-    test("recordGameResult should prepend new results to the top", () => {
+    test("loadScoreboard should populate the UI from localStorage", () => {
+        const mockHistory = [
+            { timestamp: "Jan 1, 2026, 10:00 AM", result: "Old Result" }
+        ];
+        window.localStorage.setItem('tic-tac-toe-history', JSON.stringify(mockHistory));
+
+        // Trigger load
+        game.loadScoreboard();
+
+        const rows = scoreboardBody.querySelectorAll("tr");
+        expect(rows.length).toBe(1);
+        expect(rows[0].querySelectorAll("td")[1].textContent).toBe("Old Result");
+    });
+
+    test("recordGameResult should prepend new results to the top and update localStorage", () => {
         game.recordGameResult("First Game");
         game.recordGameResult("Second Game");
 
@@ -46,18 +81,18 @@ describe("Scoreboard Functionality", () => {
         // "Second Game" should be the first row
         expect(rows[0].querySelectorAll("td")[1].textContent).toBe("Second Game");
         expect(rows[1].querySelectorAll("td")[1].textContent).toBe("First Game");
+
+        // Verify localStorage contains both
+        const stored = JSON.parse(window.localStorage.getItem('tic-tac-toe-history'));
+        expect(stored.length).toBe(2);
+        expect(stored[0].result).toBe("Second Game");
     });
 
     test("recordGameResult should do nothing if scoreboardBody is missing", () => {
-        document.body.innerHTML = ""; // Clear the DOM
-        // Re-require to refresh internal variables if necessary, 
-        // but scoreboardBody is a const at the top level of script.js.
-        // Actually, it's a const initialized at the start of script.js execution.
-        // So we need to reset modules AFTER clearing the DOM.
+        document.body.innerHTML = "";
         jest.resetModules();
         game = require("../src/script.js");
 
-        // This should not throw an error
         expect(() => game.recordGameResult("Should not crash")).not.toThrow();
     });
 });
