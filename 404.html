@@ -4,17 +4,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Oops! Page not found.">
+    <meta name="theme-color" content="#0f172a">
     <title>404 - Page Not Found | Tic-Tac-Toe</title>
     <link rel="stylesheet" href="assets/style.css" />
 </head>
 
 <body>
-    <div class="error-container">
-        <h1>Page Not Found</h1>
-        <p>Redirecting you back to the game in <span id="countdown">5</span> seconds. Click the button if nothing
-            happens.</p>
-        <a href="index.html" class="back-link">Return to the Board</a>
-    </div>
+    <main>
+        <div class="error-container">
+            <h1 class="error-code">404</h1>
+            <h2>Page Not Found</h2>
+            <p>Redirecting you back to the game in <span id="countdown">5</span> seconds.</p>
+            <a href="index.html" class="back-link">Return to the Board</a>
+        </div>
+    </main>
 
     <script src="src/redirect.js"></script>
 </body>
