@@ -14,11 +14,21 @@
     <main>
 
         <dialog id="welcome-modal">
-            <h2>Welcome to Noughts & Crosses</h2>
-            <p>Would you like to play again?</p>
+            <h2 id="modal-msg"></h2>
+            <h2>Welcome to Noughts & Crosses!</h2>
+            <p>Enter names or just Start!</p>
+            <div class="welcome-form">
+                <div class="input-group">
+                    <label for="player-x-input">Player X (Crosses):</label>
+                    <input type="text" id="player-x-input" placeholder="e.g. Jack" maxlength="15">
+                </div>
+                <div class="input-group">
+                    <label for="player-o-input">Player O (Noughts):</label>
+                    <input type="text" id="player-o-input" placeholder="e.g. Alice" maxlength="15">
+                </div>
+            </div>
             <div class="modal-actions">
-                <button id="modal-restart" class="btn">Yes</button>
-                <button id="modal-cancel" class="btn">No</button>
+                <button id="welcome-start-btn" class="btn">Start Game</button>
             </div>
         </dialog>
         <div class="game-area">
@@ -66,6 +76,7 @@
         </section>
 
         <dialog id="game-over-modal">
+            <h2 id="modal-msg"></h2>
             <p>Would you like to play again?</p>
             <div class="modal-actions">
                 <button id="modal-restart" class="btn">Yes</button>

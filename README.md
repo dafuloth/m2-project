@@ -1,17 +1,31 @@
 # Milestone 2 Project: Noughts & Crosses game
 
-This project implements the game of Noughts & Crosses (Noughts & Crosses) in HTML, CSS, and JavaScript.
+This project implements the game of Noughts & Crosses (a.k.a. Tic-Tac-Toe) in HTML, CSS, and JavaScript.
 
-## Design Decisions
+### Target Users & User Stories
+
+I am creating this game for anyone with a few minutes to spare, looking for a quick mental break.
+
+*   "As a commuter, I want the game to load instantly and work smoothly on my phone so that I can enjoy a quick round during short travel breaks."
+*   "As a competitive friend, I want my match history to persist even after closing the browser so that we can track our multi-day gaming sessions."
+*   "As a user with color vision deficiency, I want the marks (X and O) to have high-contrast, distinct colors so that I can easily play the game without confusion."
+*   "As a user who switches between phone and laptop, I want to have a great experience no matter which device I am using."
+
+
+## Design
+
+### Wireframes
+
+
 
 ### Colour scheme & Accessibility
 
 Colour scheme has been selected with accessibility in mind. For example, player colours were initially red and green but that could have made the game difficult to play for people with colour blindness (Deuteranopia). 
 
-Therefore, I have opted for the following colours, which have better contrast for players with colour blindness:
+Therefore, I have opted for the following orange and blue, which have better contrast for players with colour blindness:
 
 - **Player X**: Vivid Orange (`#fb923c`) 
-- **Player O**: Ice Blue (`#7dd3fc`) 
+- **Player O**: Ice Blue (`#7dd3fc`)
 
 ### Mobile-First Responsive Design Features
 
@@ -23,8 +37,19 @@ The game is designed to be fully responsive and work well for all screens sizes 
 * 768px breakpoint: On screens wider than 768px, the main container padding is increased from 24px to 48px in order to make better use of the extra screen space.
 
 
+### Name of the game
+
+I am calling it Noughts & Crosses, because I'm British and that's what we call it. Perhaps you may know it better as Tic-Tac-Toe.
+
 ## Features
+
+### Personalized Player Names
+
+On initial load, the user has the option to enter player names for X and O. If they do not enter names, the game will default to "X" and "O". The names are stored in local storage and will be remembered for the duration of the session.
 
 ### Scoreboard
 
 A scoreboard tracks game history. It records the date and time of each game and the result. The scoreboard is updated every time a game is played. The data is persists via the browser's local storage. The user can clear the scoreboard via a button.
+
+# Acceptance Criteria
+

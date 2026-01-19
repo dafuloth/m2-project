@@ -8,12 +8,17 @@ const modalCancelBtn = document.getElementById('modal-cancel');
 const winSound = document.getElementById('win-sound');
 const scoreboardBody = document.getElementById('scoreboard-body');
 const clearHistoryBtn = document.getElementById('clear-history');
+const welcomeModal = document.getElementById('welcome-modal');
+const playerXInput = document.getElementById('player-x-input');
+const playerOInput = document.getElementById('player-o-input');
+const welcomeStartBtn = document.getElementById('welcome-start-btn');
 
 const STORAGE_KEY = 'noughts-and-crosses-history';
 
 let boardState = Array(9).fill('');
 let currentPlayer = 'X';
 let running = true;
+let playerNames = { X: 'X', O: 'O' };
 
 const WIN_COMBOS = [
   [0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -25,9 +30,8 @@ function init() {
   boardState.fill('');
   currentPlayer = 'X';
   running = true;
-  if (statusEl) {
-    statusEl.textContent = `${currentPlayer}'s turn`;
-  }
+  running = true;
+  updateStatus();
   if (cells) {
     cells.forEach(cell => {
       if (cell) {
@@ -60,8 +64,10 @@ function makeMove(index) {
   }
 
   const winningCombo = checkWin(currentPlayer, boardState);
-
-  const winMsg = `${currentPlayer} wins!`;
+  const winnerName = playerNames[currentPlayer];
+  const winMsg = (winnerName === currentPlayer)
+    ? `${currentPlayer} wins!`
+    : `${winnerName} wins! (${currentPlayer})`;
   if (winningCombo) {
     running = false;
     if (cells) {
@@ -99,7 +105,17 @@ function makeMove(index) {
   }
 
   currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-  if (statusEl) statusEl.textContent = `${currentPlayer}'s turn`;
+  updateStatus();
+}
+
+function updateStatus() {
+  if (!statusEl) return;
+  const name = playerNames[currentPlayer];
+  if (name === currentPlayer) {
+    statusEl.textContent = `${currentPlayer}'s turn`;
+  } else {
+    statusEl.textContent = `${name}'s turn (${currentPlayer})`;
+  }
 }
 
 function checkWin(player, board = boardState) {
@@ -177,6 +193,22 @@ if (clearHistoryBtn) {
   clearHistoryBtn.addEventListener('click', clearScoreboard);
 }
 
+if (welcomeStartBtn) {
+  welcomeStartBtn.addEventListener('click', () => {
+    const xName = playerXInput.value.trim();
+    const oName = playerOInput.value.trim();
+    if (xName) playerNames.X = xName;
+    if (oName) playerNames.O = oName;
+    updateStatus();
+    welcomeModal.close();
+  });
+}
+
+// Show welcome modal on load if elements exist
+if (welcomeModal) {
+  welcomeModal.showModal();
+}
+
 init();
 loadScoreboard();
 
@@ -191,12 +223,15 @@ if (typeof module !== 'undefined' && module.exports) {
     addResultToTable,
     loadScoreboard,
     clearScoreboard,
+    updateStatus,
     // Export getters for state variables
     get boardState() { return boardState; },
     set boardState(value) { boardState = value; },
     get currentPlayer() { return currentPlayer; },
     set currentPlayer(value) { currentPlayer = value; },
     get running() { return running; },
-    set running(value) { running = value; }
+    set running(value) { running = value; },
+    get playerNames() { return playerNames; },
+    set playerNames(value) { playerNames = value; }
   };
 }

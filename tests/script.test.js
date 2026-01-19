@@ -130,9 +130,21 @@ describe("Noughts & Crosses Game", () => {
             game.currentPlayer = "X";
 
             game.makeMove(8);
-
             expect(game.running).toBe(false);
             expect(statusEl.textContent).toBe("It's a Draw!");
+        });
+
+        test("should show personalized win message for custom names", () => {
+            game.init();
+            game.playerNames.X = "Jack";
+            game.boardState[0] = "X";
+            game.boardState[1] = "X";
+            game.currentPlayer = "X";
+            game.running = true;
+
+            game.makeMove(2);
+
+            expect(statusEl.textContent).toBe("Jack wins! (X)");
         });
     });
 
