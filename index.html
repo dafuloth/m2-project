@@ -30,14 +30,14 @@
             <button class="cell" data-index="8" aria-label="Cell 9"></button>
         </div>
 
-        <div>
-            <button id="restart">Restart</button>
+        <div class="actions">
+            <button id="restart" class="btn">Restart</button>
         </div>
 
-        <section id="scoreboard-section" aria-labelledby="scoreboard-title">
+        <section id="scoreboard-section">
             <h2 id="scoreboard-title">Game History</h2>
             <div class="table-container">
-                <table id="scoreboard">
+                <table>
                     <thead>
                         <tr>
                             <th>Date & Time</th>
@@ -50,16 +50,16 @@
                 </table>
             </div>
             <div class="scoreboard-actions">
-                <button id="clear-history">Clear History</button>
+                <button id="clear-history" class="btn">Clear History</button>
             </div>
         </section>
 
         <dialog id="game-over-modal">
-            <h2 id="game-result"></h2>
+            <h2 id="modal-msg"></h2>
             <p>Would you like to play again?</p>
             <div class="modal-actions">
-                <button id="modal-restart">Yes</button>
-                <button id="modal-cancel">No</button>
+                <button id="modal-restart" class="btn">Yes</button>
+                <button id="modal-cancel" class="btn">No</button>
             </div>
         </dialog>
 

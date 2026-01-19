@@ -1,16 +1,27 @@
 :root {
+  /* Core Colors */
   --bg-color: #0f172a;
   --text-color: #f8fafc;
   --accent-color: #38bdf8;
   --accent-hover: #0ea5e9;
+
+  /* Component Colors */
   --card-bg: rgba(30, 41, 59, 0.7);
   --cell-bg: rgba(51, 65, 85, 0.5);
   --cell-hover: rgba(51, 65, 85, 0.8);
+  --modal-bg: #1e293b;
+  --modal-backdrop: rgba(15, 23, 42, 0.8);
+
+  /* Player & State Colors */
   --x-color: #fb923c;
   --o-color: #7dd3fc;
+  --win-bg: rgba(253, 224, 71, 0.2);
+  --win-border: #fde047;
 
+  /* Typography */
   --font-main: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
+
 
 * {
   box-sizing: border-box;
@@ -30,27 +41,44 @@ body {
   line-height: 1.5;
 }
 
-.scoreboard-actions {
-  display: flex;
-  justify-content: center;
-  margin-top: 1rem;
+button {
+  font-family: inherit;
 }
 
-#clear-history {
-  background-color: var(--o-color);
-  color: var(--bg-color);
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
-  font-family: var(--font-main);
+.btn {
+  font-size: 1rem;
   font-weight: 700;
+  padding: 12px 24px;
   border: none;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-block;
 }
 
-#clear-history:hover {
-  background-color: #7dd3fc;
+#restart,
+#modal-restart,
+#clear-history,
+.back-link {
+  background-color: var(--o-color);
+  color: var(--bg-color);
+}
+
+#restart:hover,
+#modal-restart:hover,
+#clear-history:hover,
+.back-link:hover {
+  background: var(--accent-hover);
+}
+
+#modal-cancel {
+  background: rgba(255, 255, 255, 0.1);
+  color: var(--text-color);
+}
+
+#modal-cancel:hover {
+  background: rgba(255, 255, 255, 0.2);
 }
 
 main {
@@ -97,7 +125,6 @@ h1 {
   background: var(--cell-bg);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 12px;
-  font-family: var(--font-main);
   font-size: 25cqw;
   font-weight: 900;
   cursor: pointer;
@@ -124,42 +151,13 @@ h1 {
   color: var(--o-color);
 }
 
-.winning-cell {
-  background: rgba(253, 224, 71, 0.2) !important;
-  border-color: #fde047 !important;
-}
-
-#restart,
-#modal-restart,
-#modal-cancel,
-.back-link {
-  font-family: var(--font-main);
-  font-size: 1rem;
-  font-weight: 700;
-  padding: 12px 24px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  text-decoration: none;
-  display: inline-block;
-}
-
-#restart,
-#modal-restart,
-.back-link {
-  background: var(--accent-color);
-  color: var(--bg-color);
-}
-
-#restart:hover,
-#modal-restart:hover,
-.back-link:hover {
-  background: var(--accent-hover);
+.cell.winning-cell {
+  background: var(--win-bg) !important;
+  border-color: var(--win-border) !important;
 }
 
 dialog {
-  background: #1e293b;
+  background: var(--modal-bg);
   color: var(--text-color);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 24px;
@@ -174,7 +172,7 @@ dialog {
 }
 
 dialog::backdrop {
-  background: rgba(15, 23, 42, 0.8);
+  background: var(--modal-backdrop);
   backdrop-filter: blur(8px);
 }
 
@@ -195,34 +193,6 @@ dialog p {
   justify-content: center;
 }
 
-#modal-cancel {
-  background: rgba(255, 255, 255, 0.1);
-  color: var(--text-color);
-}
-
-#modal-cancel:hover {
-  background: rgba(255, 255, 255, 0.2);
-}
-
-/* 404 Specifics */
-.error-container {
-  padding: 40px 0;
-}
-
-.error-code {
-  font-size: 6rem;
-  font-weight: 900;
-  line-height: 1;
-  margin-bottom: 16px;
-  background: linear-gradient(to bottom, var(--accent-color), #818cf8);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-}
-
-.back-link {
-  margin-top: 24px;
-}
 
 #scoreboard-section {
   margin-top: 40px;
@@ -273,7 +243,31 @@ tr:last-child td {
   border-bottom: none;
 }
 
-/* Media Queries for Desktop */
+.scoreboard-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+.error-container {
+  padding: 40px 0;
+}
+
+.error-code {
+  font-size: 6rem;
+  font-weight: 900;
+  line-height: 1;
+  margin-bottom: 16px;
+  background: linear-gradient(to bottom, var(--accent-color), #818cf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.back-link {
+  margin-top: 24px;
+}
+
 @media (min-width: 768px) {
   main {
     padding: 48px;
