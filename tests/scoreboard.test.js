@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-describe("Scoreboard Functionality", () => {
+describe("Scoreboard", () => {
     let scoreboardBody, game;
 
     beforeEach(() => {
@@ -94,5 +94,17 @@ describe("Scoreboard Functionality", () => {
         game = require("../src/script.js");
 
         expect(() => game.recordGameResult("Should not crash")).not.toThrow();
+    });
+
+
+    test("clearScoreboard should remove all results from UI and localStorage", () => {
+        game.recordGameResult("Game to clear");
+        expect(scoreboardBody.querySelectorAll("tr").length).toBe(1);
+
+        game.clearScoreboard();
+
+        expect(scoreboardBody.querySelectorAll("tr").length).toBe(0);
+        expect(window.localStorage.removeItem).toHaveBeenCalledWith('tic-tac-toe-history');
+        expect(window.localStorage.getItem('tic-tac-toe-history')).toBeNull();
     });
 });

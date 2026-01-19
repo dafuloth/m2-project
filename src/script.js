@@ -7,6 +7,7 @@ const modalRestartBtn = document.getElementById('modal-restart');
 const modalCancelBtn = document.getElementById('modal-cancel');
 const winSound = document.getElementById('win-sound');
 const scoreboardBody = document.getElementById('scoreboard-body');
+const clearHistoryBtn = document.getElementById('clear-history');
 
 const STORAGE_KEY = 'tic-tac-toe-history';
 
@@ -149,6 +150,13 @@ function loadScoreboard() {
   history.reverse().forEach(entry => addResultToTable(entry));
 }
 
+function clearScoreboard() {
+  localStorage.removeItem(STORAGE_KEY);
+  if (scoreboardBody) {
+    scoreboardBody.innerHTML = '';
+  }
+}
+
 if (cells && cells.length > 0 && cells[0] !== null) {
   cells.forEach(cell => cell && cell.addEventListener('click', handleCellClick));
 }
@@ -165,6 +173,9 @@ if (modalCancelBtn) {
     modal.close();
   });
 }
+if (clearHistoryBtn) {
+  clearHistoryBtn.addEventListener('click', clearScoreboard);
+}
 
 init();
 loadScoreboard();
@@ -179,6 +190,7 @@ if (typeof module !== 'undefined' && module.exports) {
     recordGameResult,
     addResultToTable,
     loadScoreboard,
+    clearScoreboard,
     // Export getters for state variables
     get boardState() { return boardState; },
     set boardState(value) { boardState = value; },

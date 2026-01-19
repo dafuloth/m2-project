@@ -30,6 +30,29 @@ body {
   line-height: 1.5;
 }
 
+.scoreboard-actions {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+}
+
+#clear-history {
+  background-color: var(--o-color);
+  color: var(--bg-color);
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-family: var(--font-main);
+  font-weight: 700;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+#clear-history:hover {
+  background-color: #7dd3fc;
+}
+
 main {
   width: 100%;
   max-width: 450px;

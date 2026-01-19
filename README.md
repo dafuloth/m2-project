@@ -22,3 +22,9 @@ The game is designed to be fully responsive and work well for all screens sizes 
 * Cells aspect ratio: `aspect-ratio: 1` ensures the cells stay perfectly square whether the screen is narrow or wide.
 * 768px breakpoint: On screens wider than 768px, the main container padding is increased from 24px to 48px in order to make better use of the extra screen space.
 
+
+## Features
+
+### Scoreboard
+
+A scoreboard tracks game history. It records the date and time of each game and the result. The scoreboard is updated every time a game is played. The data is persists via the browser's local storage. The user can clear the scoreboard via a button.
