@@ -13,6 +13,12 @@ main {
   text-align: center;
 }
 
+h1 {
+  font-size: 40px;
+  margin: 0;
+  color: #025089;
+}
+
 #board {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -57,16 +63,26 @@ dialog::backdrop {
 }
 
 #modal-restart,
-#modal-cancel, #restart {
+#modal-cancel,
+#restart,
+.back-link {
   padding: 10px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 18px;
+  transition: all 0.3s ease;
+  display: inline-block;
+  background-color: #fff;
+  color: #025089;
 }
 
 #modal-restart:hover,
 #modal-cancel:hover,
-#restart:hover {
+#restart:hover,
+.back-link:hover {
   background-color: #025089;
   color: #fff;
 }
@@ -76,4 +92,11 @@ dialog::backdrop {
   justify-content: space-evenly;
   gap: 16px;
   margin-top: 16px;
+}
+
+.error-container {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
 }
