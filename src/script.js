@@ -22,12 +22,18 @@ function init() {
   boardState.fill('');
   currentPlayer = 'X';
   running = true;
-  statusEl.textContent = `${currentPlayer}'s turn`;
-  cells.forEach(cell => {
-    cell.textContent = '';
-    cell.classList.remove('x', 'o', 'winning-cell');
-    cell.disabled = false;
-  });
+  if (statusEl) {
+    statusEl.textContent = `${currentPlayer}'s turn`;
+  }
+  if (cells) {
+    cells.forEach(cell => {
+      if (cell) {
+        cell.textContent = '';
+        cell.classList.remove('x', 'o', 'winning-cell');
+        cell.disabled = false;
+      }
+    });
+  }
   if (modal) {
     modal.close();
   }
@@ -43,19 +49,25 @@ function handleCellClick(e) {
 
 function makeMove(index) {
   boardState[index] = currentPlayer;
-  const cell = cells[index];
-  cell.textContent = currentPlayer;
-  cell.classList.add(currentPlayer.toLowerCase());
-  cell.disabled = true;
+  const cell = cells ? cells[index] : null;
+  if (cell) {
+    cell.textContent = currentPlayer;
+    cell.classList.add(currentPlayer.toLowerCase());
+    cell.disabled = true;
+  }
 
   const winningCombo = checkWin(currentPlayer, boardState);
 
   const winMsg = `${currentPlayer} wins!`;
   if (winningCombo) {
     running = false;
-    cells.forEach(cell => cell.disabled = true);
-    winningCombo.forEach(index => cells[index].classList.add('winning-cell'));
-    statusEl.textContent = winMsg;
+    if (cells) {
+      cells.forEach(cell => { if (cell) cell.disabled = true; });
+      winningCombo.forEach(index => {
+        if (cells[index]) cells[index].classList.add('winning-cell');
+      });
+    }
+    if (statusEl) statusEl.textContent = winMsg;
     if (modalMsg) {
       modalMsg.textContent = winMsg;
     }
@@ -72,7 +84,7 @@ function makeMove(index) {
   const drawMsg = "It's a Draw!";
   if (checkDraw()) {
     running = false;
-    statusEl.textContent = drawMsg;
+    if (statusEl) statusEl.textContent = drawMsg;
     if (modalMsg) {
       modalMsg.textContent = drawMsg;
     }
@@ -84,7 +96,7 @@ function makeMove(index) {
   }
 
   currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-  statusEl.textContent = `${currentPlayer}'s turn`;
+  if (statusEl) statusEl.textContent = `${currentPlayer}'s turn`;
 }
 
 function checkWin(player, board = boardState) {
@@ -117,8 +129,12 @@ function recordGameResult(result) {
   scoreboardBody.insertBefore(row, scoreboardBody.firstChild);
 }
 
-cells.forEach(cell => cell.addEventListener('click', handleCellClick));
-restartBtn.addEventListener('click', init);
+if (cells && cells.length > 0 && cells[0] !== null) {
+  cells.forEach(cell => cell && cell.addEventListener('click', handleCellClick));
+}
+if (restartBtn) {
+  restartBtn.addEventListener('click', init);
+}
 
 // Only set up modal event listeners if elements exist (not in test environment)
 if (modalRestartBtn) {
@@ -139,6 +155,7 @@ if (typeof module !== 'undefined' && module.exports) {
     handleCellClick,
     makeMove,
     checkWin,
+    recordGameResult,
     // Export getters for state variables
     get boardState() { return boardState; },
     set boardState(value) { boardState = value; },
