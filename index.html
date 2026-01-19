@@ -34,6 +34,23 @@
             <button id="restart">Restart</button>
         </div>
 
+        <section id="scoreboard-section" aria-labelledby="scoreboard-title">
+            <h2 id="scoreboard-title">Game History</h2>
+            <div class="table-container">
+                <table id="scoreboard">
+                    <thead>
+                        <tr>
+                            <th>Date & Time</th>
+                            <th>Result</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scoreboard-body">
+                        <!-- Rows will be added here via JS -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
         <dialog id="game-over-modal">
             <h2 id="game-result"></h2>
             <p>Would you like to play again?</p>

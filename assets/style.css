@@ -201,6 +201,55 @@ dialog p {
   margin-top: 24px;
 }
 
+#scoreboard-section {
+  margin-top: 40px;
+  padding-top: 32px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+#scoreboard-title {
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
+.table-container {
+  overflow-x: auto;
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.3);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+th,
+td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+th {
+  font-weight: 700;
+  color: var(--accent-color);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  font-size: 0.8rem;
+}
+
+td {
+  color: var(--text-color);
+  opacity: 0.9;
+}
+
+tr:last-child td {
+  border-bottom: none;
+}
+
 /* Media Queries for Desktop */
 @media (min-width: 768px) {
   main {

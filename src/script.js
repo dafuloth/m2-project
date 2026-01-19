@@ -6,6 +6,7 @@ const modalMsg = document.getElementById('game-result');
 const modalRestartBtn = document.getElementById('modal-restart');
 const modalCancelBtn = document.getElementById('modal-cancel');
 const winSound = document.getElementById('win-sound');
+const scoreboardBody = document.getElementById('scoreboard-body');
 
 let boardState = Array(9).fill('');
 let currentPlayer = 'X';
@@ -64,6 +65,7 @@ function makeMove(index) {
     if (modal) {
       modal.showModal();
     }
+    recordGameResult(winMsg);
     return;
   }
 
@@ -77,6 +79,7 @@ function makeMove(index) {
     if (modal) {
       modal.showModal();
     }
+    recordGameResult(drawMsg);
     return;
   }
 
@@ -90,6 +93,28 @@ function checkWin(player, board = boardState) {
 
 function checkDraw(board = boardState) {
   return board.every(cell => cell !== '');
+}
+
+function recordGameResult(result) {
+  if (!scoreboardBody) return;
+
+  const now = new Date();
+  const dateTimeStr = now.toLocaleString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit'
+  });
+
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td>${dateTimeStr}</td>
+    <td>${result}</td>
+  `;
+
+  // Prepend so latest results are at the top
+  scoreboardBody.insertBefore(row, scoreboardBody.firstChild);
 }
 
 cells.forEach(cell => cell.addEventListener('click', handleCellClick));
