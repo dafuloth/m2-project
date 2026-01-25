@@ -53,5 +53,9 @@ The scoreboard tracks game history. It records the date and time of each game an
 
 To avoid the scoreboard section extending forever, its maximum height is restricted to fit 1 screenful. If there are more results than can be shown, a scrollbar appears to allow the user to scroll through the results.
 
+### 404 Page
+
+When the user navigates to a page that does not exist, a 404 page is displayed. It is a custom 404 page with the same styling as the rest of the app.
+
 # Acceptance Criteria
 
