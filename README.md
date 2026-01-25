@@ -49,7 +49,9 @@ On initial load, the user has the option to enter player names for X and O. If t
 
 ### Scoreboard
 
-A scoreboard tracks game history. It records the date and time of each game and the result. The scoreboard is updated every time a game is played. The data is persists via the browser's local storage. The user can clear the scoreboard via a button.
+The scoreboard tracks game history. It records the date and time of each game and the result. The scoreboard is updated every time a game is played. The data is persists via the browser's local storage. The user can manually clear the scoreboard via the Clear History button, which will only be visible if there are results to clear, i.e. it is initially hidden.
+
+To avoid the scoreboard section extending forever, its maximum height is restricted to fit 1 screenful. If there are more results than can be shown, a scrollbar appears to allow the user to scroll through the results.
 
 # Acceptance Criteria
 

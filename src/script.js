@@ -147,6 +147,8 @@ function recordGameResult(result) {
   const history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
   history.unshift(entry);
   localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+
+  updateClearButtonVisibility();
 }
 
 function addResultToTable(entry) {
@@ -164,12 +166,24 @@ function loadScoreboard() {
   const history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
   scoreboardBody.innerHTML = '';
   history.reverse().forEach(entry => addResultToTable(entry));
+  updateClearButtonVisibility();
 }
 
 function clearScoreboard() {
   localStorage.removeItem(STORAGE_KEY);
   if (scoreboardBody) {
     scoreboardBody.innerHTML = '';
+  }
+  updateClearButtonVisibility();
+}
+
+function updateClearButtonVisibility() {
+  if (!clearHistoryBtn) return;
+  const history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  if (history.length > 0) {
+    clearHistoryBtn.classList.remove('hidden');
+  } else {
+    clearHistoryBtn.classList.add('hidden');
   }
 }
 
