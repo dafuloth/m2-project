@@ -13,6 +13,8 @@ const playerXInput = document.getElementById('player-x-input');
 const playerOInput = document.getElementById('player-o-input');
 const welcomeStartBtn = document.getElementById('welcome-start-btn');
 const clickSound = document.getElementById('click-sound');
+const xSound = document.getElementById('x-sound');
+const oSound = document.getElementById('o-sound');
 
 const STORAGE_KEY = 'noughts-and-crosses-history';
 
@@ -57,6 +59,24 @@ function playHoverSound() {
   }
 }
 
+function playXSound() {
+  if (xSound) {
+    xSound.currentTime = 0;
+    xSound.play().catch(() => {
+      // Ignore errors if audio can't play yet (e.g. user hasn't interacted)
+    });
+  }
+}
+
+function playOSound() {
+  if (oSound) {
+    oSound.currentTime = 0;
+    oSound.play().catch(() => {
+      // Ignore errors if audio can't play yet (e.g. user hasn't interacted)
+    });
+  }
+}
+
 function handleCellClick(e) {
   const index = Number(e.currentTarget.dataset.index);
   if (!running) return;
@@ -66,6 +86,7 @@ function handleCellClick(e) {
 }
 
 function makeMove(index) {
+  currentPlayer === 'X' ? playXSound() : playOSound();
   boardState[index] = currentPlayer;
   const cell = cells ? cells[index] : null;
   if (cell) {
