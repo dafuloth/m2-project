@@ -144,7 +144,7 @@ describe("Noughts & Crosses Game", () => {
 
             game.makeMove(2);
 
-            expect(statusEl.textContent).toBe("Jack wins! (X)");
+            expect(statusEl.textContent).toBe("(X) Jack wins!");
         });
     });
 

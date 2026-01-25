@@ -67,7 +67,7 @@ function makeMove(index) {
   const winnerName = playerNames[currentPlayer];
   const winMsg = (winnerName === currentPlayer)
     ? `${currentPlayer} wins!`
-    : `${winnerName} wins! (${currentPlayer})`;
+    : `(${currentPlayer}) ${winnerName} wins!`;
   if (winningCombo) {
     running = false;
     if (cells) {
