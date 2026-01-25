@@ -56,7 +56,10 @@
         </div>
 
         <section id="scoreboard-section">
-            <h2 id="scoreboard-title">Game History</h2>
+            <div class="scoreboard-header">
+                <h2 id="scoreboard-title">Game History</h2>
+                <button id="clear-history" class="btn hidden">Clear History</button>
+            </div>
             <div class="table-container">
                 <table>
                     <thead>
@@ -69,9 +72,6 @@
                         <!-- Rows will be added here via JS -->
                     </tbody>
                 </table>
-            </div>
-            <div class="scoreboard-actions">
-                <button id="clear-history" class="btn">Clear History</button>
             </div>
         </section>
 
