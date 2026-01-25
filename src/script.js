@@ -12,6 +12,7 @@ const welcomeModal = document.getElementById('welcome-modal');
 const playerXInput = document.getElementById('player-x-input');
 const playerOInput = document.getElementById('player-o-input');
 const welcomeStartBtn = document.getElementById('welcome-start-btn');
+const clickSound = document.getElementById('click-sound');
 
 const STORAGE_KEY = 'noughts-and-crosses-history';
 
@@ -43,6 +44,16 @@ function init() {
   }
   if (modal) {
     modal.close();
+  }
+}
+
+function playHoverSound() {
+  if (!running) return;
+  if (clickSound) {
+    clickSound.currentTime = 0;
+    clickSound.play().catch(() => {
+      // Ignore errors if audio can't play yet (e.g. user hasn't interacted)
+    });
   }
 }
 
@@ -188,7 +199,12 @@ function updateClearButtonVisibility() {
 }
 
 if (cells && cells.length > 0 && cells[0] !== null) {
-  cells.forEach(cell => cell && cell.addEventListener('click', handleCellClick));
+  cells.forEach(cell => {
+    if (cell) {
+      cell.addEventListener('click', handleCellClick);
+      cell.addEventListener('mouseenter', playHoverSound);
+    }
+  });
 }
 if (restartBtn) {
   restartBtn.addEventListener('click', init);
