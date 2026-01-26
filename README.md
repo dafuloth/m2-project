@@ -43,9 +43,23 @@ I am calling it Noughts & Crosses, because I'm British and that's what we call i
 
 ## Features
 
+### Fully responsive web app
+
+The app is designed to be fully responsive and work well for all screen sizes starting from narrow 320px mobile screens all the way up to large desktop monitors.
+
 ### Personalized Player Names
 
 On initial load, the user has the option to enter player names for X and O. If they do not enter names, the game will default to "X" and "O". The names are stored in local storage and will be remembered for the duration of the session.
+
+### Sound Effects
+
+Sound effects have been added in order to provide feedback to the players:
+
+- Cell hover: A click sound is played when the user hovers over a cell.
+- Player move: A sound effect is played when a player makes a move. The sound effect is different for each player.
+- Game win: A applause sound is played when a player wins the game.
+
+A mute button is provided to toggle sound effects on and off as preferred.
 
 ### Scoreboard
 

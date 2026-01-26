@@ -15,13 +15,16 @@ const welcomeStartBtn = document.getElementById('welcome-start-btn');
 const clickSound = document.getElementById('click-sound');
 const xSound = document.getElementById('x-sound');
 const oSound = document.getElementById('o-sound');
+const muteToggleBtn = document.getElementById('mute-toggle');
 
 const STORAGE_KEY = 'noughts-and-crosses-history';
+const MUTE_KEY = 'noughts-and-crosses-muted';
 
 let boardState = Array(9).fill('');
 let currentPlayer = 'X';
 let running = true;
 let playerNames = { X: 'X', O: 'O' };
+let isMuted = localStorage.getItem(MUTE_KEY) === 'true';
 
 const WIN_COMBOS = [
   [0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -50,31 +53,44 @@ function init() {
 }
 
 function playHoverSound() {
-  if (!running) return;
+  if (!running || isMuted) return;
   if (clickSound) {
     clickSound.currentTime = 0;
-    clickSound.play().catch(() => {
-      // Ignore errors if audio can't play yet (e.g. user hasn't interacted)
-    });
+    clickSound.play().catch(() => { });
   }
 }
 
 function playXSound() {
+  if (isMuted) return;
   if (xSound) {
     xSound.currentTime = 0;
-    xSound.play().catch(() => {
-      // Ignore errors if audio can't play yet (e.g. user hasn't interacted)
-    });
+    xSound.play().catch(() => { });
   }
 }
 
 function playOSound() {
+  if (isMuted) return;
   if (oSound) {
     oSound.currentTime = 0;
-    oSound.play().catch(() => {
-      // Ignore errors if audio can't play yet (e.g. user hasn't interacted)
-    });
+    oSound.play().catch(() => { });
   }
+}
+
+function toggleMute() {
+  isMuted = !isMuted;
+  localStorage.setItem(MUTE_KEY, isMuted);
+  updateMuteButtonUI();
+}
+
+function updateMuteButtonUI() {
+  if (!muteToggleBtn) return;
+  const icon = isMuted ? '🔇' : '🔊';
+  const label = isMuted ? 'Unmute' : 'Mute';
+  muteToggleBtn.innerHTML = `
+    <span class="mute-icon">${icon}</span>
+    <span class="mute-label">${label}</span>
+  `;
+  muteToggleBtn.setAttribute('aria-label', isMuted ? 'Unmute sounds' : 'Mute sounds');
 }
 
 function handleCellClick(e) {
@@ -112,7 +128,7 @@ function makeMove(index) {
     if (modalMsg) {
       modalMsg.textContent = winMsg;
     }
-    if (winSound) {
+    if (winSound && !isMuted) {
       winSound.play();
     }
     if (modal) {
@@ -243,6 +259,9 @@ if (modalCancelBtn) {
 if (clearHistoryBtn) {
   clearHistoryBtn.addEventListener('click', clearScoreboard);
 }
+if (muteToggleBtn) {
+  muteToggleBtn.addEventListener('click', toggleMute);
+}
 
 if (welcomeStartBtn) {
   welcomeStartBtn.addEventListener('click', () => {
@@ -260,6 +279,7 @@ if (welcomeModal) {
   welcomeModal.showModal();
 }
 
+updateMuteButtonUI();
 init();
 loadScoreboard();
 

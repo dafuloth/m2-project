@@ -73,9 +73,30 @@ button {
 #restart:hover,
 #modal-restart:hover,
 #welcome-start-btn:hover,
+#mute-toggle:hover,
 #clear-history:hover,
 .back-link:hover {
   background: var(--accent-hover);
+}
+
+#mute-toggle {
+  background-color: var(--o-color);
+  color: var(--bg-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  width: 140px;
+}
+
+#mute-toggle .mute-icon {
+  font-size: 1.3rem;
+  line-height: 1;
+}
+
+#mute-toggle .mute-label {
+  font-size: 1rem;
+  font-weight: 700;
 }
 
 #modal-cancel {
@@ -125,6 +146,12 @@ h1 {
   gap: 12px;
   margin-bottom: 32px;
   container-type: inline-size;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
 }
 
 .cell {
