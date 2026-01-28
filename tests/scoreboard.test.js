@@ -5,6 +5,11 @@
 describe("Scoreboard", () => {
     let scoreboardBody, game;
 
+    beforeAll(() => {
+        HTMLDialogElement.prototype.showModal = jest.fn();
+        HTMLDialogElement.prototype.close = jest.fn();
+    });
+
     beforeEach(() => {
         // Mock localStorage
         const localStorageMock = (() => {
@@ -27,6 +32,7 @@ describe("Scoreboard", () => {
         document.body.innerHTML = `
             <div id="status"></div>
             <button id="restart">Restart</button>
+            <button id="clear-history" class="btn hidden">Clear History</button>
             <div id="board">
                 <button class="cell" data-index="0"></button>
             </div>
@@ -106,5 +112,29 @@ describe("Scoreboard", () => {
         expect(scoreboardBody.querySelectorAll("tr").length).toBe(0);
         expect(window.localStorage.removeItem).toHaveBeenCalledWith('noughts-and-crosses-history');
         expect(window.localStorage.getItem('noughts-and-crosses-history')).toBeNull();
+    });
+
+    describe("Clear History Visibility", () => {
+        test("clear-history button should be hidden initially when history is empty", () => {
+            const clearHistoryBtn = document.getElementById("clear-history");
+            game.updateClearButtonVisibility();
+            expect(clearHistoryBtn.classList.contains("hidden")).toBe(true);
+        });
+
+        test("clear-history button should be visible when history is populated", () => {
+            const clearHistoryBtn = document.getElementById("clear-history");
+            game.recordGameResult("X wins!");
+            // Visibility update is called within recordGameResult
+            expect(clearHistoryBtn.classList.contains("hidden")).toBe(false);
+        });
+
+        test("clear-history button should be hidden after clearing history", () => {
+            const clearHistoryBtn = document.getElementById("clear-history");
+            game.recordGameResult("X wins!");
+            expect(clearHistoryBtn.classList.contains("hidden")).toBe(false);
+
+            game.clearScoreboard();
+            expect(clearHistoryBtn.classList.contains("hidden")).toBe(true);
+        });
     });
 });

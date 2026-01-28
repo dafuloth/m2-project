@@ -5,10 +5,49 @@
 describe("Noughts & Crosses Game", () => {
     let cells, statusEl, restartBtn, game;
 
+    beforeAll(() => {
+        HTMLDialogElement.prototype.showModal = jest.fn();
+        HTMLDialogElement.prototype.close = jest.fn();
+    });
+
     beforeEach(() => {
+        // Mock localStorage
+        const store = {};
+        const localStorageMock = {
+            getItem: jest.fn(key => store[key] || null),
+            setItem: jest.fn((key, value) => { store[key] = value.toString(); }),
+            removeItem: jest.fn(key => { delete store[key]; }),
+            clear: jest.fn(() => { for (let key in store) delete store[key]; })
+        };
+        Object.defineProperty(window, 'localStorage', { value: localStorageMock, writable: true });
+
         document.body.innerHTML = `
       <div id="status"></div>
       <button id="restart">Restart</button>
+      <button id="mute-toggle">
+        <span class="mute-icon">🔊</span>
+        <span class="mute-label">Mute</span>
+      </button>
+
+      <dialog id="welcome-modal">
+        <div class="mode-selector">
+          <input type="radio" id="person" name="opponent" value="person" checked>
+          <label for="person" class="mode-card">
+            <div class="mode-card-content">
+              <input type="text" class="player-x-name-input" id="player-x-input-friend">
+              <input type="text" class="player-o-name-input" id="player-o-input-friend">
+            </div>
+          </label>
+          <input type="radio" id="computerX" name="opponent" value="computerX">
+          <label for="computerX" class="mode-card">
+            <div class="mode-card-content">
+              <input type="text" class="player-o-name-input" id="player-o-input-comp">
+            </div>
+          </label>
+        </div>
+        <button id="welcome-start-btn">Start Game</button>
+      </dialog>
+
       <button class="cell" data-index="0"></button>
       <button class="cell" data-index="1"></button>
       <button class="cell" data-index="2"></button>
@@ -179,6 +218,77 @@ describe("Noughts & Crosses Game", () => {
 
             expect(game.boardState[5]).toBe("X");
             expect(cells[5].textContent).toBe("X");
+        });
+    });
+
+    describe("Sound effects", () => {
+        test("toggleMute should flip isMuted state and persist to storage", () => {
+            game.isMuted = false;
+            game.toggleMute();
+            expect(game.isMuted).toBe(true);
+            expect(window.localStorage.setItem).toHaveBeenCalledWith('noughts-and-crosses-muted', 'true');
+
+            game.toggleMute();
+            expect(game.isMuted).toBe(false);
+            expect(window.localStorage.setItem).toHaveBeenCalledWith('noughts-and-crosses-muted', 'false');
+        });
+
+        test("updateMuteButtonUI should update icon and label", () => {
+            game.isMuted = true;
+            game.updateMuteButtonUI();
+
+            expect(document.querySelector(".mute-label").textContent).toBe("Unmute");
+            expect(document.querySelector(".mute-icon").textContent).toMatch(/🔇/);
+
+            game.isMuted = false;
+            game.updateMuteButtonUI();
+
+            expect(document.querySelector(".mute-label").textContent).toBe("Mute");
+            expect(document.querySelector(".mute-icon").textContent).toMatch(/🔊/);
+        });
+    });
+
+    describe("Welcome Modal & Expandable Cards", () => {
+        test("Start Game should collect names from the active mode card", () => {
+            const friendXInput = document.getElementById('player-x-input-friend');
+            const friendOInput = document.getElementById('player-o-input-friend');
+            const welcomeStartBtn = document.getElementById('welcome-start-btn');
+
+            friendXInput.value = "Jack";
+            friendOInput.value = "Jill";
+
+            // Trigger start game logic
+            welcomeStartBtn.click();
+
+            expect(game.playerNames.X).toBe("Jack");
+            expect(game.playerNames.O).toBe("Jill");
+        });
+
+        test("should fallback to X and O for blank inputs", () => {
+            const welcomeStartBtn = document.getElementById('welcome-start-btn');
+
+            // Set some existing names first
+            game.playerNames.X = "OldX";
+            game.playerNames.O = "OldO";
+
+            // Click start with blank inputs
+            welcomeStartBtn.click();
+
+            expect(game.playerNames.X).toBe("X");
+            expect(game.playerNames.O).toBe("O");
+        });
+
+        test("should collect only relevant names in computer mode", () => {
+            document.getElementById('computerX').checked = true;
+            const compOInput = document.getElementById('player-o-input-comp');
+            const welcomeStartBtn = document.getElementById('welcome-start-btn');
+
+            compOInput.value = "Zach";
+
+            welcomeStartBtn.click();
+
+            expect(game.playerNames.O).toBe("Zach");
+            expect(game.playerNames.X).toBe("X"); // Default
         });
     });
 });

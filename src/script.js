@@ -18,11 +18,13 @@ const muteToggleBtn = document.getElementById('mute-toggle');
 const STORAGE_KEY = 'noughts-and-crosses-history';
 const MUTE_KEY = 'noughts-and-crosses-muted';
 
-let boardState = Array(9).fill('');
-let currentPlayer = 'X';
-let running = true;
-let playerNames = { X: 'X', O: 'O' };
-let isMuted = localStorage.getItem(MUTE_KEY) === 'true';
+const state = {
+  boardState: Array(9).fill(''),
+  currentPlayer: 'X',
+  running: true,
+  playerNames: { X: 'X', O: 'O' },
+  isMuted: localStorage.getItem(MUTE_KEY) === 'true'
+};
 
 const WIN_COMBOS = [
   [0, 1, 2], [3, 4, 5], [6, 7, 8],
@@ -31,10 +33,9 @@ const WIN_COMBOS = [
 ];
 
 function init() {
-  boardState.fill('');
-  currentPlayer = 'X';
-  running = true;
-  running = true;
+  state.boardState.fill('');
+  state.currentPlayer = 'X';
+  state.running = true;
   updateStatus();
   if (cells) {
     cells.forEach(cell => {
@@ -51,7 +52,7 @@ function init() {
 }
 
 function playHoverSound() {
-  if (!running || isMuted) return;
+  if (!state.running || state.isMuted) return;
   if (clickSound) {
     clickSound.currentTime = 0;
     clickSound.play().catch(() => { });
@@ -59,7 +60,7 @@ function playHoverSound() {
 }
 
 function playXSound() {
-  if (isMuted) return;
+  if (state.isMuted) return;
   if (xSound) {
     xSound.currentTime = 0;
     xSound.play().catch(() => { });
@@ -67,7 +68,7 @@ function playXSound() {
 }
 
 function playOSound() {
-  if (isMuted) return;
+  if (state.isMuted) return;
   if (oSound) {
     oSound.currentTime = 0;
     oSound.play().catch(() => { });
@@ -75,58 +76,58 @@ function playOSound() {
 }
 
 function toggleMute() {
-  isMuted = !isMuted;
-  localStorage.setItem(MUTE_KEY, isMuted);
+  state.isMuted = !state.isMuted;
+  localStorage.setItem(MUTE_KEY, String(state.isMuted));
   updateMuteButtonUI();
 }
 
 function updateMuteButtonUI() {
   if (!muteToggleBtn) return;
-  const icon = isMuted ? '🔇' : '🔊';
-  const label = isMuted ? 'Unmute' : 'Mute';
+  const icon = state.isMuted ? '🔇' : '🔊';
+  const label = state.isMuted ? 'Unmute' : 'Mute';
   muteToggleBtn.innerHTML = `
     <span class="mute-icon">${icon}</span>
     <span class="mute-label">${label}</span>
   `;
-  muteToggleBtn.setAttribute('aria-label', isMuted ? 'Unmute sounds' : 'Mute sounds');
+  muteToggleBtn.setAttribute('aria-label', state.isMuted ? 'Unmute sounds' : 'Mute sounds');
 }
 
 function handleCellClick(e) {
   const index = Number(e.currentTarget.dataset.index);
-  if (!running) return;
-  if (boardState[index] !== '') return;
+  if (!state.running) return;
+  if (state.boardState[index] !== '') return;
 
   makeMove(index);
 }
 
 function makeMove(index) {
-  currentPlayer === 'X' ? playXSound() : playOSound();
-  boardState[index] = currentPlayer;
+  state.currentPlayer === 'X' ? playXSound() : playOSound();
+  state.boardState[index] = state.currentPlayer;
   const cell = cells ? cells[index] : null;
   if (cell) {
-    cell.textContent = currentPlayer;
-    cell.classList.add(currentPlayer.toLowerCase());
+    cell.textContent = state.currentPlayer;
+    cell.classList.add(state.currentPlayer.toLowerCase());
     cell.disabled = true;
   }
 
-  const winningCombo = checkWin(currentPlayer, boardState);
-  const winnerName = playerNames[currentPlayer];
-  const winMsg = (winnerName === currentPlayer)
-    ? `${currentPlayer} wins!`
-    : `(${currentPlayer}) ${winnerName} wins!`;
+  const winningCombo = checkWin(state.currentPlayer, state.boardState);
+  const winnerName = state.playerNames[state.currentPlayer];
+  const winMsg = (winnerName === state.currentPlayer)
+    ? `${state.currentPlayer} wins!`
+    : `(${state.currentPlayer}) ${winnerName} wins!`;
   if (winningCombo) {
-    running = false;
+    state.running = false;
     if (cells) {
       cells.forEach(cell => { if (cell) cell.disabled = true; });
-      winningCombo.forEach(index => {
-        if (cells[index]) cells[index].classList.add('winning-cell');
+      winningCombo.forEach(idx => {
+        if (cells[idx]) cells[idx].classList.add('winning-cell');
       });
     }
     if (statusEl) statusEl.textContent = winMsg;
     if (modalMsg) {
       modalMsg.textContent = winMsg;
     }
-    if (winSound && !isMuted) {
+    if (winSound && !state.isMuted) {
       winSound.play();
     }
     if (modal) {
@@ -138,7 +139,7 @@ function makeMove(index) {
 
   const drawMsg = "It's a Draw!";
   if (checkDraw()) {
-    running = false;
+    state.running = false;
     if (statusEl) statusEl.textContent = drawMsg;
     if (modalMsg) {
       modalMsg.textContent = drawMsg;
@@ -150,25 +151,25 @@ function makeMove(index) {
     return;
   }
 
-  currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+  state.currentPlayer = state.currentPlayer === 'X' ? 'O' : 'X';
   updateStatus();
 }
 
 function updateStatus() {
   if (!statusEl) return;
-  const name = playerNames[currentPlayer];
-  if (name === currentPlayer) {
-    statusEl.textContent = `${currentPlayer}'s turn`;
+  const name = state.playerNames[state.currentPlayer];
+  if (name === state.currentPlayer) {
+    statusEl.textContent = `${state.currentPlayer}'s turn`;
   } else {
-    statusEl.textContent = `${name}'s turn (${currentPlayer})`;
+    statusEl.textContent = `${name}'s turn (${state.currentPlayer})`;
   }
 }
 
-function checkWin(player, board = boardState) {
+function checkWin(player, board = state.boardState) {
   return WIN_COMBOS.find(combo => combo.every(i => board[i] === player)) || null;
 }
 
-function checkDraw(board = boardState) {
+function checkDraw(board = state.boardState) {
   return board.every(cell => cell !== '');
 }
 
@@ -264,8 +265,8 @@ if (muteToggleBtn) {
 if (welcomeStartBtn) {
   welcomeStartBtn.addEventListener('click', () => {
     // Reset defaults
-    playerNames.X = 'X';
-    playerNames.O = 'O';
+    state.playerNames.X = 'X';
+    state.playerNames.O = 'O';
 
     // Find active mode card
     const selectedRadio = document.querySelector('.mode-selector input[type="radio"]:checked');
@@ -275,8 +276,8 @@ if (welcomeStartBtn) {
         const xInput = card.querySelector('.player-x-name-input');
         const oInput = card.querySelector('.player-o-name-input');
 
-        if (xInput && xInput.value.trim()) playerNames.X = xInput.value.trim();
-        if (oInput && oInput.value.trim()) playerNames.O = oInput.value.trim();
+        if (xInput && xInput.value.trim()) state.playerNames.X = xInput.value.trim();
+        if (oInput && oInput.value.trim()) state.playerNames.O = oInput.value.trim();
       }
     }
 
@@ -306,14 +307,19 @@ if (typeof module !== 'undefined' && module.exports) {
     loadScoreboard,
     clearScoreboard,
     updateStatus,
-    // Export getters for state variables
-    get boardState() { return boardState; },
-    set boardState(value) { boardState = value; },
-    get currentPlayer() { return currentPlayer; },
-    set currentPlayer(value) { currentPlayer = value; },
-    get running() { return running; },
-    set running(value) { running = value; },
-    get playerNames() { return playerNames; },
-    set playerNames(value) { playerNames = value; }
+    updateClearButtonVisibility,
+    toggleMute,
+    updateMuteButtonUI,
+    // Export getters/setters for state variables
+    get boardState() { return state.boardState; },
+    set boardState(value) { state.boardState = value; },
+    get currentPlayer() { return state.currentPlayer; },
+    set currentPlayer(value) { state.currentPlayer = value; },
+    get running() { return state.running; },
+    set running(value) { state.running = value; },
+    get playerNames() { return state.playerNames; },
+    set playerNames(value) { state.playerNames = value; },
+    get isMuted() { return state.isMuted; },
+    set isMuted(value) { state.isMuted = value; }
   };
 }
