@@ -227,6 +227,70 @@ dialog p {
   justify-content: center;
 }
 
+.mode-selector {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.mode-selector input[type="radio"] {
+  display: none;
+}
+
+.mode-card {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  background: rgba(15, 23, 42, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  text-align: left;
+}
+
+.mode-card:hover {
+  background: rgba(255, 255, 255, 0.05);
+  border-color: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.mode-icon {
+  font-size: 1.5rem;
+  background: rgba(255, 255, 255, 0.1);
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  flex-shrink: 0;
+}
+
+.mode-text {
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+/* Selected state */
+.mode-selector input[type="radio"]:checked+.mode-card {
+  background: rgba(125, 211, 252, 0.15);
+  border-color: var(--accent-color);
+  box-shadow: 0 0 20px rgba(125, 211, 252, 0.2);
+}
+
+.mode-selector input[type="radio"]:checked+.mode-card .mode-icon {
+  background: var(--accent-color);
+}
+
+.mode-selector input[type="radio"]:checked+.mode-card .mode-text {
+  color: var(--accent-color);
+  font-weight: 700;
+}
+
 .welcome-form {
   margin-bottom: 24px;
   display: flex;
@@ -283,7 +347,7 @@ input[type="text"]:focus {
 }
 
 
-#scoreboard-section {
+#scoreboard {
   margin-top: 40px;
   padding-top: 32px;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
@@ -418,8 +482,8 @@ tr:last-child td {
     text-align: center;
   }
 
-  #scoreboard-section {
-    margin-top: 0;
+  #scoreboard {
+    margin-top: 1em;
     padding-top: 0;
     border-top: none;
   }

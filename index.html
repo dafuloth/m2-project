@@ -15,8 +15,29 @@
 
         <dialog id="welcome-modal">
             <h2>Welcome to<br>Noughts & Crosses!</h2>
-            <p>Enter player names or just hit Start Game.<br>X plays first.</p>
+            <p>X goes first. How would you like to play?</p>
             <div class="welcome-form">
+                <div class="mode-selector">
+                    <input type="radio" id="person" name="opponent" value="person" checked>
+                    <label for="person" class="mode-card">
+                        <span class="mode-icon">👥</span>
+                        <span class="mode-text">vs Friend</span>
+                    </label>
+
+                    <input type="radio" id="computerY" name="opponent" value="computerY">
+                    <label for="computerY" class="mode-card">
+                        <span class="mode-icon">X</span>
+                        <span class="mode-text">Player X vs Computer O</span>
+                    </label>
+
+                    <input type="radio" id="computerX" name="opponent" value="computerX">
+                    <label for="computerX" class="mode-card">
+                        <span class="mode-icon">O</span>
+                        <span class="mode-text">Player O vs Computer X</span>
+                    </label>
+                </div>
+
+
                 <div class="input-group">
                     <label for="player-x-input">Player X (Crosses):</label>
                     <input type="text" id="player-x-input" placeholder="(optional) Enter Player 'X' name"
@@ -60,7 +81,7 @@
             </div>
         </div>
 
-        <section id="scoreboard-section">
+        <section id="scoreboard">
             <div class="scoreboard-header">
                 <h2 id="scoreboard-title">Game History</h2>
                 <button id="clear-history" class="btn hidden">Clear History</button>
