@@ -1,23 +1,31 @@
+// --- CONSTANTS ---
+const STORAGE_KEY = 'noughts-and-crosses-history';
+const MUTE_KEY = 'noughts-and-crosses-muted';
+const WIN_COMBOS = [
+  [0, 1, 2], [3, 4, 5], [6, 7, 8],
+  [0, 3, 6], [1, 4, 7], [2, 5, 8],
+  [0, 4, 8], [2, 4, 6]
+];
+
+// --- ELEMENTS ---
 const cells = Array.from(document.querySelectorAll('.cell'));
 const statusEl = document.getElementById('status');
 const restartBtn = document.getElementById('restart');
 const modal = document.getElementById('game-over-modal');
-const modalMsg = document.getElementById('game-result');
+const resultModalMsg = document.getElementById('game-result');
 const modalRestartBtn = document.getElementById('modal-restart');
 const modalCancelBtn = document.getElementById('modal-cancel');
-const winSound = document.getElementById('win-sound');
 const scoreboardBody = document.getElementById('scoreboard-body');
 const clearHistoryBtn = document.getElementById('clear-history');
 const welcomeModal = document.getElementById('welcome-modal');
 const welcomeStartBtn = document.getElementById('welcome-start-btn');
+const winSound = document.getElementById('win-sound');
 const clickSound = document.getElementById('click-sound');
 const xSound = document.getElementById('x-sound');
 const oSound = document.getElementById('o-sound');
 const muteToggleBtn = document.getElementById('mute-toggle');
 
-const STORAGE_KEY = 'noughts-and-crosses-history';
-const MUTE_KEY = 'noughts-and-crosses-muted';
-
+// --- STATE MANAGEMENT ---
 const state = {
   boardState: Array(9).fill(''),
   currentPlayer: 'X',
@@ -26,61 +34,7 @@ const state = {
   isMuted: localStorage.getItem(MUTE_KEY) === 'true'
 };
 
-const WIN_COMBOS = [
-  [0, 1, 2], [3, 4, 5], [6, 7, 8],
-  [0, 3, 6], [1, 4, 7], [2, 5, 8],
-  [0, 4, 8], [2, 4, 6]
-];
-
-function init() {
-  state.boardState.fill('');
-  state.currentPlayer = 'X';
-  state.running = true;
-  updateStatus();
-  if (cells) {
-    cells.forEach(cell => {
-      if (cell) {
-        cell.textContent = '';
-        cell.classList.remove('x', 'o', 'winning-cell');
-        cell.disabled = false;
-      }
-    });
-  }
-  if (modal) {
-    modal.close();
-  }
-}
-
-function playHoverSound() {
-  if (!state.running || state.isMuted) return;
-  if (clickSound) {
-    clickSound.currentTime = 0;
-    clickSound.play().catch(() => { });
-  }
-}
-
-function playXSound() {
-  if (state.isMuted) return;
-  if (xSound) {
-    xSound.currentTime = 0;
-    xSound.play().catch(() => { });
-  }
-}
-
-function playOSound() {
-  if (state.isMuted) return;
-  if (oSound) {
-    oSound.currentTime = 0;
-    oSound.play().catch(() => { });
-  }
-}
-
-function toggleMute() {
-  state.isMuted = !state.isMuted;
-  localStorage.setItem(MUTE_KEY, String(state.isMuted));
-  updateMuteButtonUI();
-}
-
+// --- SOUNDS ---
 function updateMuteButtonUI() {
   if (!muteToggleBtn) return;
   const icon = state.isMuted ? '🔇' : '🔊';
@@ -92,79 +46,65 @@ function updateMuteButtonUI() {
   muteToggleBtn.setAttribute('aria-label', state.isMuted ? 'Unmute sounds' : 'Mute sounds');
 }
 
-function handleCellClick(e) {
-  const index = Number(e.currentTarget.dataset.index);
-  if (!state.running) return;
-  if (state.boardState[index] !== '') return;
-
-  makeMove(index);
+function toggleMute() {
+  state.isMuted = !state.isMuted;
+  localStorage.setItem(MUTE_KEY, String(state.isMuted));
+  updateMuteButtonUI();
 }
 
-function makeMove(index) {
-  state.currentPlayer === 'X' ? playXSound() : playOSound();
-  state.boardState[index] = state.currentPlayer;
-  const cell = cells ? cells[index] : null;
-  if (cell) {
-    cell.textContent = state.currentPlayer;
-    cell.classList.add(state.currentPlayer.toLowerCase());
-    cell.disabled = true;
-  }
-
-  const winningCombo = checkWin(state.currentPlayer, state.boardState);
-  const winnerName = state.playerNames[state.currentPlayer];
-  const winMsg = (winnerName === state.currentPlayer)
-    ? `${state.currentPlayer} wins!`
-    : `(${state.currentPlayer}) ${winnerName} wins!`;
-  if (winningCombo) {
-    state.running = false;
-    if (cells) {
-      cells.forEach(cell => { if (cell) cell.disabled = true; });
-      winningCombo.forEach(idx => {
-        if (cells[idx]) cells[idx].classList.add('winning-cell');
-      });
-    }
-    if (statusEl) statusEl.textContent = winMsg;
-    if (modalMsg) {
-      modalMsg.textContent = winMsg;
-    }
-    if (winSound && !state.isMuted) {
-      winSound.play();
-    }
-    if (modal) {
-      modal.showModal();
-    }
-    recordGameResult(winMsg);
-    return;
-  }
-
-  const drawMsg = "It's a Draw!";
-  if (checkDraw()) {
-    state.running = false;
-    if (statusEl) statusEl.textContent = drawMsg;
-    if (modalMsg) {
-      modalMsg.textContent = drawMsg;
-    }
-    if (modal) {
-      modal.showModal();
-    }
-    recordGameResult(drawMsg);
-    return;
-  }
-
-  state.currentPlayer = state.currentPlayer === 'X' ? 'O' : 'X';
-  updateStatus();
+function playSound(sound) {
+  if (state.isMuted || !sound) return;
+  sound.currentTime = 0;
+  sound.play().catch(() => { });
 }
 
+// --- STORAGE SERVICE ---
+function getHistory() {
+  return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+}
+
+function saveHistory(history) {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+}
+
+function clearHistory() {
+  localStorage.removeItem(STORAGE_KEY);
+  if (scoreboardBody) scoreboardBody.innerHTML = '';
+  updateClearButtonVisibility();
+}
+
+// --- UI HELPERS ---
 function updateStatus() {
   if (!statusEl) return;
   const name = state.playerNames[state.currentPlayer];
-  if (name === state.currentPlayer) {
-    statusEl.textContent = `${state.currentPlayer}'s turn`;
-  } else {
-    statusEl.textContent = `${name}'s turn (${state.currentPlayer})`;
-  }
+  statusEl.textContent = (name === state.currentPlayer)
+    ? `${state.currentPlayer}'s turn`
+    : `${name}'s turn (${state.currentPlayer})`;
 }
 
+function updateClearButtonVisibility() {
+  if (!clearHistoryBtn) return;
+  const history = getHistory();
+  clearHistoryBtn.classList.toggle('hidden', history.length === 0);
+}
+
+function addResultToTable(entry) {
+  if (!scoreboardBody) return;
+  const row = document.createElement('tr');
+  row.innerHTML = `<td>${entry.timestamp}</td><td>${entry.result}</td>`;
+  scoreboardBody.insertBefore(row, scoreboardBody.firstChild);
+}
+
+function loadScoreboard() {
+  if (!scoreboardBody) return;
+  const history = getHistory();
+  scoreboardBody.innerHTML = '';
+  // History is saved with unshift (newest first), so reverse for chronological insertion via insertBefore
+  [...history].reverse().forEach(addResultToTable);
+  updateClearButtonVisibility();
+}
+
+// --- GAME LOGIC ---
 function checkWin(player, board = state.boardState) {
   return WIN_COMBOS.find(combo => combo.every(i => board[i] === player)) || null;
 }
@@ -175,151 +115,136 @@ function checkDraw(board = state.boardState) {
 
 function recordGameResult(result) {
   if (!scoreboardBody) return;
-
-  const now = new Date();
-  const dateTimeStr = now.toLocaleString(undefined, {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+  const dateTimeStr = new Date().toLocaleString(undefined, {
+    year: 'numeric', month: 'short', day: 'numeric',
+    hour: '2-digit', minute: '2-digit'
   });
-
   const entry = { timestamp: dateTimeStr, result };
 
-  // Update Scoreboard
   addResultToTable(entry);
-
-  // Update Storage
-  const history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+  const history = getHistory();
   history.unshift(entry);
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
-
+  saveHistory(history);
   updateClearButtonVisibility();
 }
 
-function addResultToTable(entry) {
-  if (!scoreboardBody) return;
-  const row = document.createElement('tr');
-  row.innerHTML = `
-    <td>${entry.timestamp}</td>
-    <td>${entry.result}</td>
-  `;
-  scoreboardBody.insertBefore(row, scoreboardBody.firstChild);
-}
+function init() {
+  state.boardState.fill('');
+  state.currentPlayer = 'X';
+  state.running = true;
+  updateStatus();
 
-function loadScoreboard() {
-  if (!scoreboardBody) return;
-  const history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-  scoreboardBody.innerHTML = '';
-  history.reverse().forEach(entry => addResultToTable(entry));
-  updateClearButtonVisibility();
-}
-
-function clearScoreboard() {
-  localStorage.removeItem(STORAGE_KEY);
-  if (scoreboardBody) {
-    scoreboardBody.innerHTML = '';
-  }
-  updateClearButtonVisibility();
-}
-
-function updateClearButtonVisibility() {
-  if (!clearHistoryBtn) return;
-  const history = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
-  if (history.length > 0) {
-    clearHistoryBtn.classList.remove('hidden');
-  } else {
-    clearHistoryBtn.classList.add('hidden');
-  }
-}
-
-if (cells && cells.length > 0 && cells[0] !== null) {
   cells.forEach(cell => {
     if (cell) {
-      cell.addEventListener('click', handleCellClick);
-      cell.addEventListener('mouseenter', playHoverSound);
+      cell.textContent = '';
+      cell.classList.remove('x', 'o', 'winning-cell');
+      cell.disabled = false;
     }
   });
-}
-if (restartBtn) {
-  restartBtn.addEventListener('click', init);
+  if (modal) modal.close();
 }
 
-// Only set up modal event listeners if elements exist (not in test environment)
-if (modalRestartBtn) {
-  modalRestartBtn.addEventListener('click', init);
-}
-if (modalCancelBtn) {
-  modalCancelBtn.addEventListener('click', () => {
-    modal.close();
-  });
-}
-if (clearHistoryBtn) {
-  clearHistoryBtn.addEventListener('click', clearScoreboard);
-}
-if (muteToggleBtn) {
-  muteToggleBtn.addEventListener('click', toggleMute);
-}
+function makeMove(index) {
+  state.currentPlayer === 'X' ? playSound(xSound) : playSound(oSound);
+  state.boardState[index] = state.currentPlayer;
 
-if (welcomeStartBtn) {
-  welcomeStartBtn.addEventListener('click', () => {
-    // Reset defaults
-    state.playerNames.X = 'X';
-    state.playerNames.O = 'O';
+  const cell = cells[index];
+  if (cell) {
+    cell.textContent = state.currentPlayer;
+    cell.classList.add(state.currentPlayer.toLowerCase());
+    cell.disabled = true;
+  }
 
-    // Find active mode card
-    const selectedRadio = document.querySelector('.mode-selector input[type="radio"]:checked');
-    if (selectedRadio) {
-      const card = selectedRadio.nextElementSibling;
-      if (card) {
-        const xInput = card.querySelector('.player-x-name-input');
-        const oInput = card.querySelector('.player-o-name-input');
+  const winningCombo = checkWin(state.currentPlayer);
+  if (winningCombo) {
+    state.running = false;
+    const winnerName = state.playerNames[state.currentPlayer];
+    const winMsg = (winnerName === state.currentPlayer)
+      ? `${state.currentPlayer} wins!`
+      : `(${state.currentPlayer}) ${winnerName} wins!`;
 
-        if (xInput && xInput.value.trim()) state.playerNames.X = xInput.value.trim();
-        if (oInput && oInput.value.trim()) state.playerNames.O = oInput.value.trim();
-      }
-    }
+    if (statusEl) statusEl.textContent = winMsg;
+    if (resultModalMsg) resultModalMsg.textContent = winMsg;
+    if (cells) winningCombo.forEach(idx => cells[idx]?.classList.add('winning-cell'));
+    if (!state.isMuted) playSound(winSound);
+    if (modal) modal.showModal();
+    recordGameResult(winMsg);
+    return;
+  }
 
-    updateStatus();
-    welcomeModal.close();
-  });
-}
+  if (checkDraw()) {
+    state.running = false;
+    const drawMsg = "It's a Draw!";
+    if (statusEl) statusEl.textContent = drawMsg;
+    if (resultModalMsg) resultModalMsg.textContent = drawMsg;
+    if (modal) modal.showModal();
+    recordGameResult(drawMsg);
+    return;
+  }
 
-// Show welcome modal on load if elements exist
-if (welcomeModal) {
-  welcomeModal.showModal();
+  state.currentPlayer = state.currentPlayer === 'X' ? 'O' : 'X';
+  updateStatus();
 }
 
+// --- EVENT HANDLERS ---
+function handleCellClick(e) {
+  const index = Number(e.currentTarget.dataset.index);
+  if (!state.running || state.boardState[index] !== '') return;
+  makeMove(index);
+}
+
+function handleWelcomeStart() {
+  state.playerNames.X = 'X';
+  state.playerNames.O = 'O';
+
+  const selectedRadio = document.querySelector('.mode-selector input[type="radio"]:checked');
+  const card = selectedRadio?.nextElementSibling;
+  if (card) {
+    const xInput = card.querySelector('.player-x-name-input');
+    const oInput = card.querySelector('.player-o-name-input');
+    if (xInput?.value.trim()) state.playerNames.X = xInput.value.trim();
+    if (oInput?.value.trim()) state.playerNames.O = oInput.value.trim();
+  }
+
+  updateStatus();
+  welcomeModal?.close();
+}
+
+// --- INITIALIZATION ---
+cells.forEach(cell => {
+  if (cell) {
+    cell.addEventListener('click', handleCellClick);
+    cell.addEventListener('mouseenter', () => (!state.isMuted && state.running) && playSound(clickSound));
+  }
+});
+
+restartBtn?.addEventListener('click', init);
+modalRestartBtn?.addEventListener('click', init);
+modalCancelBtn?.addEventListener('click', () => modal?.close());
+clearHistoryBtn?.addEventListener('click', clearHistory);
+muteToggleBtn?.addEventListener('click', toggleMute);
+welcomeStartBtn?.addEventListener('click', handleWelcomeStart);
+
+if (welcomeModal) welcomeModal.showModal();
 updateMuteButtonUI();
 init();
 loadScoreboard();
 
-// Exports required for testing
+// --- EXPORTS FOR TESTING ---
 if (typeof module !== 'undefined' && module.exports) {
   module.exports = {
-    init,
-    handleCellClick,
-    makeMove,
-    checkWin,
-    recordGameResult,
-    addResultToTable,
-    loadScoreboard,
-    clearScoreboard,
-    updateStatus,
-    updateClearButtonVisibility,
-    toggleMute,
-    updateMuteButtonUI,
-    // Export getters/setters for state variables
+    init, handleCellClick, makeMove, checkWin, recordGameResult, addResultToTable,
+    loadScoreboard, clearScoreboard: clearHistory, updateStatus, updateClearButtonVisibility,
+    toggleMute, updateMuteButtonUI,
     get boardState() { return state.boardState; },
-    set boardState(value) { state.boardState = value; },
+    set boardState(v) { state.boardState = v; },
     get currentPlayer() { return state.currentPlayer; },
-    set currentPlayer(value) { state.currentPlayer = value; },
+    set currentPlayer(v) { state.currentPlayer = v; },
     get running() { return state.running; },
-    set running(value) { state.running = value; },
+    set running(v) { state.running = v; },
     get playerNames() { return state.playerNames; },
-    set playerNames(value) { state.playerNames = value; },
+    set playerNames(v) { state.playerNames = v; },
     get isMuted() { return state.isMuted; },
-    set isMuted(value) { state.isMuted = value; }
+    set isMuted(v) { state.isMuted = v; }
   };
 }
