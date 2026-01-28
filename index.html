@@ -20,33 +20,53 @@
                 <div class="mode-selector">
                     <input type="radio" id="person" name="opponent" value="person" checked>
                     <label for="person" class="mode-card">
-                        <span class="mode-icon">👥</span>
-                        <span class="mode-text">vs Friend</span>
+                        <div class="mode-card-header">
+                            <span class="mode-icon">👥</span>
+                            <span class="mode-text">vs Friend</span>
+                        </div>
+                        <div class="mode-card-content">
+                            <div class="input-group">
+                                <label for="player-x-input-friend">Player X Name:</label>
+                                <input type="text" id="player-x-input-friend" class="player-x-name-input"
+                                    placeholder="(optional) Enter name" maxlength="15">
+                            </div>
+                            <div class="input-group">
+                                <label for="player-o-input-friend">Player O Name:</label>
+                                <input type="text" id="player-o-input-friend" class="player-o-name-input"
+                                    placeholder="(optional) Enter name" maxlength="15">
+                            </div>
+                        </div>
                     </label>
 
                     <input type="radio" id="computerY" name="opponent" value="computerY">
                     <label for="computerY" class="mode-card">
-                        <span class="mode-icon">X</span>
-                        <span class="mode-text">Player X vs Computer O</span>
+                        <div class="mode-card-header">
+                            <span class="mode-icon">X</span>
+                            <span class="mode-text">Player X vs Computer O</span>
+                        </div>
+                        <div class="mode-card-content">
+                            <div class="input-group">
+                                <label for="player-x-input-comp">Your Name (X):</label>
+                                <input type="text" id="player-x-input-comp" class="player-x-name-input"
+                                    placeholder="(optional) Enter name" maxlength="15">
+                            </div>
+                        </div>
                     </label>
 
                     <input type="radio" id="computerX" name="opponent" value="computerX">
                     <label for="computerX" class="mode-card">
-                        <span class="mode-icon">O</span>
-                        <span class="mode-text">Player O vs Computer X</span>
+                        <div class="mode-card-header">
+                            <span class="mode-icon">O</span>
+                            <span class="mode-text">Player O vs Computer X</span>
+                        </div>
+                        <div class="mode-card-content">
+                            <div class="input-group">
+                                <label for="player-o-input-comp">Your Name (O):</label>
+                                <input type="text" id="player-o-input-comp" class="player-o-name-input"
+                                    placeholder="(optional) Enter name" maxlength="15">
+                            </div>
+                        </div>
                     </label>
-                </div>
-
-
-                <div class="input-group">
-                    <label for="player-x-input">Player X (Crosses):</label>
-                    <input type="text" id="player-x-input" placeholder="(optional) Enter Player 'X' name"
-                        maxlength="15">
-                </div>
-                <div class="input-group">
-                    <label for="player-o-input">Player O (Noughts):</label>
-                    <input type="text" id="player-o-input" placeholder="(optional) Enter Player 'O' name"
-                        maxlength="15">
                 </div>
             </div>
             <div class="modal-actions">

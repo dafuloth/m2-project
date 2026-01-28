@@ -240,15 +240,43 @@ dialog p {
 
 .mode-card {
   display: flex;
-  align-items: center;
-  gap: 16px;
-  padding: 16px 20px;
+  flex-direction: column;
+  gap: 0;
+  padding: 0;
   background: rgba(15, 23, 42, 0.4);
   border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
   cursor: pointer;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   text-align: left;
+  overflow: hidden;
+}
+
+.mode-card-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 16px 20px;
+  width: 100%;
+}
+
+.mode-card-content {
+  max-height: 0;
+  opacity: 0;
+  padding: 0 20px;
+  transition: all 0.4s ease-out;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.mode-card .input-group {
+  text-align: left;
+}
+
+.mode-card-content label {
+  font-size: 0.75rem !important;
+  margin-bottom: 4px;
 }
 
 .mode-card:hover {
@@ -259,31 +287,38 @@ dialog p {
 }
 
 .mode-icon {
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   background: rgba(255, 255, 255, 0.1);
-  width: 44px;
-  height: 44px;
+  width: 36px;
+  height: 36px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 12px;
+  border-radius: 10px;
   flex-shrink: 0;
 }
 
 .mode-text {
   font-weight: 500;
-  font-size: 1rem;
+  font-size: 0.95rem;
 }
 
 /* Selected state */
 .mode-selector input[type="radio"]:checked+.mode-card {
-  background: rgba(125, 211, 252, 0.15);
+  background: rgba(125, 211, 252, 0.1);
   border-color: var(--accent-color);
-  box-shadow: 0 0 20px rgba(125, 211, 252, 0.2);
+  box-shadow: 0 0 20px rgba(125, 211, 252, 0.15);
+}
+
+.mode-selector input[type="radio"]:checked+.mode-card .mode-card-content {
+  max-height: 250px;
+  opacity: 1;
+  padding-bottom: 20px;
 }
 
 .mode-selector input[type="radio"]:checked+.mode-card .mode-icon {
   background: var(--accent-color);
+  color: var(--bg-color);
 }
 
 .mode-selector input[type="radio"]:checked+.mode-card .mode-text {

@@ -9,8 +9,6 @@ const winSound = document.getElementById('win-sound');
 const scoreboardBody = document.getElementById('scoreboard-body');
 const clearHistoryBtn = document.getElementById('clear-history');
 const welcomeModal = document.getElementById('welcome-modal');
-const playerXInput = document.getElementById('player-x-input');
-const playerOInput = document.getElementById('player-o-input');
 const welcomeStartBtn = document.getElementById('welcome-start-btn');
 const clickSound = document.getElementById('click-sound');
 const xSound = document.getElementById('x-sound');
@@ -265,10 +263,23 @@ if (muteToggleBtn) {
 
 if (welcomeStartBtn) {
   welcomeStartBtn.addEventListener('click', () => {
-    const xName = playerXInput.value.trim();
-    const oName = playerOInput.value.trim();
-    if (xName) playerNames.X = xName;
-    if (oName) playerNames.O = oName;
+    // Reset defaults
+    playerNames.X = 'X';
+    playerNames.O = 'O';
+
+    // Find active mode card
+    const selectedRadio = document.querySelector('.mode-selector input[type="radio"]:checked');
+    if (selectedRadio) {
+      const card = selectedRadio.nextElementSibling;
+      if (card) {
+        const xInput = card.querySelector('.player-x-name-input');
+        const oInput = card.querySelector('.player-o-name-input');
+
+        if (xInput && xInput.value.trim()) playerNames.X = xInput.value.trim();
+        if (oInput && oInput.value.trim()) playerNames.O = oInput.value.trim();
+      }
+    }
+
     updateStatus();
     welcomeModal.close();
   });
