@@ -61,6 +61,10 @@ Sound effects have been added in order to provide feedback to the players:
 
 A mute button is provided to toggle sound effects on and off as preferred.
 
+### Computer Opponent
+
+The game is for two human players but a computer opponent is available to allow for single-player games where the user can play against the computer. The player can choose if they want to go first or second by selecting whether they want to play as X or O (since X goes first). I give the computer a slight delay before it makes its move in order to make the game feel more natural. Otherwise it would play instantly, which could be jarring for the player or confusing if it was unclear what move the computer had made.
+
 ### Scoreboard
 
 The scoreboard tracks game history. It records the date and time of each game and the result. The scoreboard is updated every time a game is played. The data is persists via the browser's local storage. The user can manually clear the scoreboard via the Clear History button, which will only be visible if there are results to clear, i.e. it is initially hidden.

@@ -18,6 +18,10 @@ const TEST_HTML = `
         <input type="text" class="player-x-name-input" id="player-x-input-friend">
         <input type="text" class="player-o-name-input" id="player-o-input-friend">
       </label>
+      <input type="radio" id="computerO" name="opponent" value="computerO">
+      <label for="computerO" class="mode-card">
+        <input type="text" class="player-x-name-input" id="player-x-input-comp">
+      </label>
       <input type="radio" id="computerX" name="opponent" value="computerX">
       <label for="computerX" class="mode-card">
         <input type="text" class="player-o-name-input" id="player-o-input-comp">
@@ -240,18 +244,92 @@ describe("Noughts & Crosses Game Suite", () => {
             expect(game.playerNames.O).toBe("Jill");
         });
 
-        test("Start Game should collect Computer mode names", () => {
+        test("Welcome modal should handle Computer mode selection names", () => {
             document.getElementById('computerX').checked = true;
             document.getElementById('player-o-input-comp').value = "Zach";
             document.getElementById('welcome-start-btn').click();
+
             expect(game.playerNames.O).toBe("Zach");
-            expect(game.playerNames.X).toBe("X");
+            expect(game.playerNames.X).toBe("Computer");
         });
 
         test("Start Game should fallback for blank names", () => {
             game.playerNames.X = "OldX";
             document.getElementById('welcome-start-btn').click();
             expect(game.playerNames.X).toBe("X");
+        });
+    });
+
+    describe("Computer Opponent", () => {
+        beforeEach(() => {
+            jest.useFakeTimers();
+        });
+
+        afterEach(() => {
+            jest.useRealTimers();
+        });
+
+        test("Selecting Computer O mode should set AI state and name", () => {
+            document.getElementById('computerO').checked = true;
+            document.getElementById('player-x-input-comp').value = "Human";
+            document.getElementById('welcome-start-btn').click();
+
+            expect(game.playerNames.O).toBe("Computer");
+            expect(game.playerNames.X).toBe("Human");
+            expect(game.computerOpponent).toBe("O");
+        });
+
+        test("Selecting Computer X mode should set AI state and name", () => {
+            document.getElementById('computerX').checked = true;
+            document.getElementById('player-o-input-comp').value = "Human";
+            document.getElementById('welcome-start-btn').click();
+
+            expect(game.playerNames.O).toBe("Human");
+            expect(game.playerNames.X).toBe("Computer");
+            expect(game.computerOpponent).toBe("X");
+        });
+
+        test("Computer should make a move after human turn", () => {
+            // Setup AI as O
+            document.getElementById('computerO').checked = true;
+            document.getElementById('welcome-start-btn').click();
+
+            // Human (X) moves
+            game.makeMove(0);
+            expect(game.currentPlayer).toBe("O");
+
+            // Advance timers for setTimeout
+            jest.advanceTimersByTime(500);
+
+            // Verify computer moved
+            expect(game.currentPlayer).toBe("X");
+            expect(game.boardState.filter(c => c !== "").length).toBe(2);
+        });
+
+        test("Computer should move first if it is X", () => {
+            document.getElementById('computerX').checked = true;
+            document.getElementById('welcome-start-btn').click();
+
+            // Advance timers for first move
+            jest.advanceTimersByTime(500);
+
+            expect(game.boardState.filter(c => c !== "").length).toBe(1);
+            expect(game.currentPlayer).toBe("O");
+        });
+
+        test("Computer should not move if game is over", () => {
+            document.getElementById('computerO').checked = true;
+            document.getElementById('welcome-start-btn').click();
+
+            setBoard(["X", "X", "", "O", "O", "", "", "", ""]);
+            game.currentPlayer = "X";
+            game.makeMove(2); // X wins
+
+            jest.advanceTimersByTime(500);
+
+            // Current player stays X (game stopped)
+            expect(game.running).toBe(false);
+            expect(game.boardState.filter(c => c === "O").length).toBe(2); // No new O move
         });
     });
 

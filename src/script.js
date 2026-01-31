@@ -31,6 +31,7 @@ const state = {
   currentPlayer: 'X',
   running: true,
   playerNames: { X: 'X', O: 'O' },
+  computerOpponent: null, // 'X', 'O', or null
   isMuted: localStorage.getItem(MUTE_KEY) === 'true'
 };
 
@@ -142,6 +143,24 @@ function init() {
     }
   });
   if (modal) modal.close();
+
+  // If computer is X, trigger move automatically on restart
+  if (state.computerOpponent === 'X' && state.running) {
+    setTimeout(makeComputerMove, 500);
+  }
+}
+
+function makeComputerMove() {
+  if (!state.running || state.currentPlayer !== state.computerOpponent) return;
+
+  const availableIndices = state.boardState
+    .map((val, idx) => (val === '' ? idx : null))
+    .filter(val => val !== null);
+
+  if (availableIndices.length > 0) {
+    const randomIndex = availableIndices[Math.floor(Math.random() * availableIndices.length)];
+    makeMove(randomIndex);
+  }
 }
 
 function makeMove(index) {
@@ -184,6 +203,11 @@ function makeMove(index) {
 
   state.currentPlayer = state.currentPlayer === 'X' ? 'O' : 'X';
   updateStatus();
+
+  // Check if next turn belongs to computer
+  if (state.running && state.currentPlayer === state.computerOpponent) {
+    setTimeout(makeComputerMove, 500);
+  }
 }
 
 // --- EVENT HANDLERS ---
@@ -196,18 +220,42 @@ function handleCellClick(e) {
 function handleWelcomeStart() {
   state.playerNames.X = 'X';
   state.playerNames.O = 'O';
+  state.computerOpponent = null;
 
   const selectedRadio = document.querySelector('.mode-selector input[type="radio"]:checked');
   const card = selectedRadio?.nextElementSibling;
-  if (card) {
-    const xInput = card.querySelector('.player-x-name-input');
-    const oInput = card.querySelector('.player-o-name-input');
-    if (xInput?.value.trim()) state.playerNames.X = xInput.value.trim();
-    if (oInput?.value.trim()) state.playerNames.O = oInput.value.trim();
+
+  if (selectedRadio?.value === 'computerO') {
+    state.computerOpponent = 'O';
+    state.playerNames.O = 'Computer';
+    if (card) {
+      const xInput = card.querySelector('.player-x-name-input');
+      if (xInput?.value.trim()) state.playerNames.X = xInput.value.trim();
+    }
+  } else if (selectedRadio?.value === 'computerX') {
+    state.computerOpponent = 'X';
+    state.playerNames.X = 'Computer';
+    if (card) {
+      const oInput = card.querySelector('.player-o-name-input');
+      if (oInput?.value.trim()) state.playerNames.O = oInput.value.trim();
+    }
+  } else {
+    // vs Friend
+    if (card) {
+      const xInput = card.querySelector('.player-x-name-input');
+      const oInput = card.querySelector('.player-o-name-input');
+      if (xInput?.value.trim()) state.playerNames.X = xInput.value.trim();
+      if (oInput?.value.trim()) state.playerNames.O = oInput.value.trim();
+    }
   }
 
   updateStatus();
   welcomeModal?.close();
+
+  // If computer is X, it starts first
+  if (state.computerOpponent === 'X') {
+    setTimeout(makeComputerMove, 500);
+  }
 }
 
 // --- INITIALIZATION ---
@@ -244,6 +292,8 @@ if (typeof module !== 'undefined' && module.exports) {
     set running(v) { state.running = v; },
     get playerNames() { return state.playerNames; },
     set playerNames(v) { state.playerNames = v; },
+    get computerOpponent() { return state.computerOpponent; },
+    set computerOpponent(v) { state.computerOpponent = v; },
     get isMuted() { return state.isMuted; },
     set isMuted(v) { state.isMuted = v; }
   };
