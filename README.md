@@ -2,7 +2,7 @@
 
 This project implements the game of Noughts & Crosses (a.k.a. Tic-Tac-Toe) in HTML, CSS, and JavaScript.
 
-### Target Users & User Stories
+## Target Users & User Stories
 
 I am creating this game for anyone with a few minutes to spare, looking for a quick mental break.
 
@@ -63,7 +63,7 @@ A mute button is provided to toggle sound effects on and off as preferred.
 
 ### Computer Opponent
 
-The game is for two human players but a computer opponent is available to allow for single-player games where the user can play against the computer. The player can choose if they want to go first or second by selecting whether they want to play as X or O (since X goes first). I give the computer a slight delay before it makes its move in order to make the game feel more natural. Otherwise it would play instantly, which could be jarring for the player or confusing if it was unclear what move the computer had made.
+The game is for two human players but a computer opponent is available to allow for single-player games where the user can play against the computer. The player can choose if they want to go first or second by selecting whether they want to play as X or O (since X goes first). I give the computer a slight delay before it makes its move to simulate "thinking time" in order to make the game feel more natural. Otherwise it would play instantly, which could be jarring for the player or confusing if it was unclear what move the computer had made.
 
 ### Scoreboard
 
@@ -75,5 +75,33 @@ To avoid the scoreboard section extending forever, its maximum height is restric
 
 When the user navigates to a page that does not exist, a 404 page is displayed. It is a custom 404 page with the same styling as the rest of the app.
 
-# Acceptance Criteria
+## Bugs
+
+During manual testing, I discovered a game-breaking bug in the vs Computer modes.
+
+There is a deliberate delay before the computer makes its move in order to make the game feel more natural. But the delay cannot be too short if it is to be meaningful. Eventually I settled on 1000 milliseconds (i.e. 1 second). However, I discovered that this delay allows the player to "interfere" with the computer's move by making a move during the delay period, which is then accepted as the computer's move.
+
+The bug was as follows:
+
+1. It's the computer's turn
+2. In the 1 second delay before the computer makes its move, the player clicks on an empty cell
+3. The player's move is accepted as the computer's move.
+4. And _now_ it's the player's turn - only now should the player have been able to interact with the board
+
+The fix was to add an additional condition to the guard clause in the `handleCellClick` event handler function:
+
+```javascript
+function handleCellClick(e) {
+  const index = Number(e.currentTarget.dataset.index);
+  if (!state.running || state.boardState[index] !== '' || state.currentPlayer === state.computerOpponent) return;
+  makeMove(index);
+}
+```
+
+The condition `state.currentPlayer === state.computerOpponent` means that when the current player is the computer opponent, the cell click event handler will return early and do nothing. This prevents the player from interfering with the computer's move.
+
+The discovery of this bug highlights the importance of a holistic approach to testing. Although automated Jest tests are useful for ensuring that new code doesn't break existing functionality, they do not completely eliminate the need for manual testing.
+
+
+## Acceptance Criteria
 

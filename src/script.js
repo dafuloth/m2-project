@@ -214,7 +214,7 @@ function makeMove(index) {
 // --- EVENT HANDLERS ---
 function handleCellClick(e) {
   const index = Number(e.currentTarget.dataset.index);
-  if (!state.running || state.boardState[index] !== '') return;
+  if (!state.running || state.boardState[index] !== '' || state.currentPlayer === state.computerOpponent) return;
   makeMove(index);
 }
 

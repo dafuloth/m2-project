@@ -314,7 +314,17 @@ describe("Noughts & Crosses Game Suite", () => {
             jest.useRealTimers();
         });
 
-        test("Selecting Computer O mode should set AI state and name", () => {
+        test("handleCellClick should ignore clicks when it is the computer's turn", () => {
+            game.init();
+            game.computerOpponent = 'X';
+
+            clickCell(0); // Human attempts to click a cell
+
+            expect(game.boardState[0]).toBe(""); // Human input was ignored
+            expect(game.currentPlayer).toBe("X"); // Still the computer's turn
+        });
+
+        test("Selecting Computer O mode should set Computer Player state and name", () => {
             document.getElementById('computerO').checked = true;
             document.getElementById('player-x-input-comp').value = "Human";
             document.getElementById('welcome-start-btn').click();
@@ -324,7 +334,7 @@ describe("Noughts & Crosses Game Suite", () => {
             expect(game.computerOpponent).toBe("O");
         });
 
-        test("Selecting Computer X mode should set AI state and name", () => {
+        test("Selecting Computer X mode should set Computer Player state and name", () => {
             document.getElementById('computerX').checked = true;
             document.getElementById('player-o-input-comp').value = "Human";
             document.getElementById('welcome-start-btn').click();
@@ -335,7 +345,7 @@ describe("Noughts & Crosses Game Suite", () => {
         });
 
         test("Computer should make a move after human turn", () => {
-            // Setup AI as O
+            // Setup Computer Player as O
             document.getElementById('computerO').checked = true;
             document.getElementById('welcome-start-btn').click();
 
