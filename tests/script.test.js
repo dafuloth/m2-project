@@ -3,6 +3,7 @@
  */
 
 // --- TEST CONSTANTS ---
+const COMPUTER_DELAY = 1000;
 const TEST_HTML = `
   <div id="status"></div>
   <button id="restart">Restart</button>
@@ -343,7 +344,7 @@ describe("Noughts & Crosses Game Suite", () => {
             expect(game.currentPlayer).toBe("O");
 
             // Advance timers for setTimeout
-            jest.advanceTimersByTime(500);
+            jest.advanceTimersByTime(COMPUTER_DELAY);
 
             // Verify computer moved
             expect(game.currentPlayer).toBe("X");
@@ -355,7 +356,7 @@ describe("Noughts & Crosses Game Suite", () => {
             document.getElementById('welcome-start-btn').click();
 
             // Advance timers for first move
-            jest.advanceTimersByTime(500);
+            jest.advanceTimersByTime(COMPUTER_DELAY);
 
             expect(game.boardState.filter(c => c !== "").length).toBe(1);
             expect(game.currentPlayer).toBe("O");
@@ -373,7 +374,7 @@ describe("Noughts & Crosses Game Suite", () => {
             game.currentPlayer = "X";
             game.makeMove(2); // X wins
 
-            jest.advanceTimersByTime(500);
+            jest.advanceTimersByTime(COMPUTER_DELAY);
 
             // Current player stays X (game stopped)
             expect(game.running).toBe(false);
