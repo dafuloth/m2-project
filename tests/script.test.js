@@ -242,6 +242,14 @@ describe("Noughts & Crosses Game Suite", () => {
             expect(window.localStorage.setItem).toHaveBeenCalledWith('noughts-and-crosses-muted', 'false');
         });
 
+        test("App should initialize with muted state if found in storage", () => {
+            window.localStorage.setItem('noughts-and-crosses-muted', 'true');
+            // Clear and re-require to trigger initial state logic
+            jest.resetModules();
+            const freshGame = require("../src/script.js");
+            expect(freshGame.isMuted).toBe(true);
+        });
+
         test("updateMuteButtonUI should show Unmute label when muted", () => {
             game.isMuted = true;
             game.updateMuteButtonUI();
