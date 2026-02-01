@@ -90,23 +90,43 @@ describe("Noughts & Crosses Game Suite", () => {
 
     describe("Game Logic & Rules", () => {
         test("checkWin should detect horizontal win", () => {
-            expect(game.checkWin("X", ["X", "X", "X", "", "", "", "", "", ""])).toEqual([0, 1, 2]);
+            expect(game.checkWin("X", [
+                "X", "X", "X",
+                "O", "O", "",
+                "", "", ""
+            ])).toEqual([0, 1, 2]);
         });
 
         test("checkWin should detect vertical win", () => {
-            expect(game.checkWin("O", ["O", "", "", "O", "", "", "O", "", ""])).toEqual([0, 3, 6]);
+            expect(game.checkWin("O", [
+                "O", "", "",
+                "O", "", "",
+                "O", "", ""
+            ])).toEqual([0, 3, 6]);
         });
 
         test("checkWin should detect diagonal win", () => {
-            expect(game.checkWin("X", ["X", "", "", "", "X", "", "", "", "X"])).toEqual([0, 4, 8]);
+            expect(game.checkWin("X", [
+                "X", "", "",
+                "", "X", "",
+                "", "", "X"
+            ])).toEqual([0, 4, 8]);
         });
 
         test("checkWin should return null for no win", () => {
-            expect(game.checkWin("X", ["X", "O", "X", "", "", "", "", "", ""])).toBeNull();
+            expect(game.checkWin("X", [
+                "X", "O", "X",
+                "O", "X", "O",
+                "O", "X", ""
+            ])).toBeNull();
         });
 
         test("init should reset boardState to empty", () => {
-            setBoard(["X", "O", "X", "O", "X", "O", "X", "O", "X"]);
+            setBoard([
+                "X", "O", "X",
+                "O", "X", "O",
+                "O", "X", ""
+            ]);
             game.init();
             expect(game.boardState.every(c => c === "")).toBe(true);
         });
@@ -145,7 +165,11 @@ describe("Noughts & Crosses Game Suite", () => {
 
         test("makeMove should detect win and update status", () => {
             game.init();
-            setBoard(["X", "X", "", "", "", "", "", "", ""]);
+            setBoard([
+                "X", "X", "",
+                "O", "O", "",
+                "", "", ""
+            ]);
             game.currentPlayer = "X";
             game.makeMove(2);
             expect(game.running).toBe(false);
@@ -154,7 +178,11 @@ describe("Noughts & Crosses Game Suite", () => {
 
         test("makeMove should detect draw and update status", () => {
             game.init();
-            setBoard(["X", "O", "X", "X", "O", "O", "O", "X", ""]);
+            setBoard([
+                "X", "O", "X",
+                "X", "O", "O",
+                "O", "X", ""
+            ]);
             game.currentPlayer = "X";
             game.makeMove(8);
             expect(game.running).toBe(false);
@@ -164,7 +192,11 @@ describe("Noughts & Crosses Game Suite", () => {
         test("makeMove should handle personalized winning names", () => {
             game.init();
             game.playerNames.X = "Annie";
-            setBoard(["X", "X", "", "", "", "", "", "", ""]);
+            setBoard([
+                "X", "X", "",
+                "O", "O", "",
+                "", "", ""
+            ]);
             game.currentPlayer = "X";
             game.makeMove(2);
             expect(statusEl.textContent).toBe("(X) Annie wins!");
@@ -181,7 +213,11 @@ describe("Noughts & Crosses Game Suite", () => {
 
         test("handleCellClick should ignore clicks on already filled cells", () => {
             game.init();
-            setBoard(["X", "", "", "", "", "", "", "", ""]);
+            setBoard([
+                "X", "", "",
+                "", "", "",
+                "", "", ""
+            ]);
             game.currentPlayer = "O";
             clickCell(0);
             expect(game.currentPlayer).toBe("O"); // Should not have switched
@@ -321,7 +357,11 @@ describe("Noughts & Crosses Game Suite", () => {
             document.getElementById('computerO').checked = true;
             document.getElementById('welcome-start-btn').click();
 
-            setBoard(["X", "X", "", "O", "O", "", "", "", ""]);
+            setBoard([
+                "X", "X", "",
+                "O", "O", "",
+                "", "", ""
+            ]);
             game.currentPlayer = "X";
             game.makeMove(2); // X wins
 
@@ -336,7 +376,11 @@ describe("Noughts & Crosses Game Suite", () => {
     describe("Result Presentation", () => {
         test("Winning should update result modal message", () => {
             game.init();
-            setBoard(["X", "X", "", "", "", "", "", "", ""]);
+            setBoard([
+                "X", "X", "",
+                "O", "O", "",
+                "", "", ""
+            ]);
             game.currentPlayer = "X";
             game.makeMove(2);
             expect(document.getElementById('game-result').textContent).toMatch(/wins/);
@@ -344,7 +388,11 @@ describe("Noughts & Crosses Game Suite", () => {
 
         test("Draw should update result modal message", () => {
             game.init();
-            setBoard(["X", "O", "X", "X", "O", "O", "O", "X", ""]);
+            setBoard([
+                "X", "O", "X",
+                "X", "O", "O",
+                "O", "X", ""
+            ]);
             game.currentPlayer = "X";
             game.makeMove(8);
             expect(document.getElementById('game-result').textContent).toBe("It's a Draw!");
@@ -352,7 +400,11 @@ describe("Noughts & Crosses Game Suite", () => {
 
         test("Winning should play win sound", () => {
             game.init();
-            setBoard(["X", "X", "", "", "", "", "", "", ""]);
+            setBoard([
+                "X", "X", "",
+                "O", "O", "",
+                "", "", ""
+            ]);
             game.currentPlayer = "X";
             game.makeMove(2);
             expect(window.HTMLMediaElement.prototype.play).toHaveBeenCalled();
