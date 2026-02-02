@@ -268,7 +268,14 @@ cells.forEach(cell => {
   }
 });
 
-restartBtn?.addEventListener('click', () => welcomeModal?.showModal());
+restartBtn?.addEventListener('click', () => {
+  const personRadio = document.getElementById('person');
+  if (personRadio) personRadio.checked = true;
+  document.querySelectorAll('.welcome-form input[type="text"]').forEach(input => {
+    input.value = '';
+  });
+  welcomeModal?.showModal();
+});
 modalRestartBtn?.addEventListener('click', init);
 modalCancelBtn?.addEventListener('click', () => modal?.close());
 clearHistoryBtn?.addEventListener('click', clearHistory);

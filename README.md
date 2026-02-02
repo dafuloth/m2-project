@@ -80,7 +80,28 @@ When the user navigates to a page that does not exist, a 404 page is displayed. 
 
 ## Bugs
 
-### Welcome Modal incorrect if player Restarts a vs Computer game
+### vs Player card blank if player clicks Restarts during vs Computer game
+
+<img src="docs/bug-blank-card-on-restart.png" alt="vs Player card blank if player clicks Restarts during vs Computer game" width="400">
+
+The Restart button reopens the Welcome modal for setting up a new game. However, if the user clicks Restart during a vs Computer game, the vs Player card appears blank.
+
+The reason for this is that the game mode cards on the Welcome modal are actually radio button inputs. The expansion or collapse of the cards is achieved using CSS and relies on the `:checked` pseudo-class. So if the user was playing against the Computer and then clicked Restart, the modal would reopen but the "vs Friend" card would be collapsed becuase its radio button would be in an unchecked state.
+
+This bug was fixed by amending the Restart button event handler to explicitly check the "vs Friend" radio button when the modal is reopened:
+
+```javascript
+const personRadio = document.getElementById('person');
+if (personRadio) personRadio.checked = true;
+```
+
+Unrelated to this bug, I also decided to clear all the player names so the user can start the game fresh:
+
+```javascript
+document.querySelectorAll('.welcome-form input[type="text"]').forEach(input => {
+  input.value = '';
+});
+```
 
 
 ### Turn Interference
