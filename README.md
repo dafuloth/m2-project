@@ -14,8 +14,15 @@ I am creating this game for anyone with a few minutes to spare, looking for a qu
 
 ## Design
 
-### Wireframes
+The app is designed to be fully responsive and work well for all screen sizes starting from narrow 320px mobile screens all the way up to large desktop monitors.
 
+The game is presented in two panes: the game board, and the game history (scoreboard). On wider screens the panes are side-by-side. On narrower screens the panes are stacked, with the game history pane beneath the game board.
+
+The game board is a 3x3 grid of cells with a Restart and Mute/Unmute buttons underneath it. The Restart button reopens the Welcome modal for setting up a new game. The Mute/Unmute button toggles sound on and off.
+
+The game history is a table that records the date and time of each game and the result. The scoreboard is updated every time a game is played and the user can manually clear the scoreboard via the Clear History button, which will initially be hidden because there is nothing to clear.
+
+### Wireframes
 
 
 ### Colour scheme & Accessibility
@@ -42,10 +49,6 @@ The game is designed to be fully responsive and work well for all screens sizes 
 I am calling it Noughts & Crosses, because I'm British and that's what we call it. Perhaps you may know it better as Tic-Tac-Toe.
 
 ## Features
-
-### Fully responsive web app
-
-The app is designed to be fully responsive and work well for all screen sizes starting from narrow 320px mobile screens all the way up to large desktop monitors.
 
 ### Personalized Player Names
 
@@ -77,7 +80,12 @@ When the user navigates to a page that does not exist, a 404 page is displayed. 
 
 ## Bugs
 
-During manual testing, I discovered a game-breaking bug in the vs Computer modes.
+### Welcome Modal incorrect if player Restarts a vs Computer game
+
+
+### Turn Interference
+
+During manual testing, I discovered a game-breaking bug in the vs Computer game modes.
 
 There is a deliberate delay before the computer makes its move in order to make the game feel more natural. But the delay cannot be too short if it is to be meaningful. Eventually I settled on 1000 milliseconds (i.e. 1 second). However, I discovered that this delay allows the player to "interfere" with the computer's move by making a move during the delay period, which is then accepted as the computer's move.
 

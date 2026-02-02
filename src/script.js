@@ -219,6 +219,7 @@ function handleCellClick(e) {
 }
 
 function handleWelcomeStart() {
+  init();
   state.playerNames.X = 'X';
   state.playerNames.O = 'O';
   state.computerOpponent = null;
@@ -267,7 +268,7 @@ cells.forEach(cell => {
   }
 });
 
-restartBtn?.addEventListener('click', init);
+restartBtn?.addEventListener('click', () => welcomeModal?.showModal());
 modalRestartBtn?.addEventListener('click', init);
 modalCancelBtn?.addEventListener('click', () => modal?.close());
 clearHistoryBtn?.addEventListener('click', clearHistory);
