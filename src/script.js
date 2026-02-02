@@ -60,7 +60,7 @@ function playSound(sound) {
   sound.play().catch(() => { });
 }
 
-// --- STORAGE SERVICE ---
+// --- STORAGE ---
 function getHistory() {
   return JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
 }
@@ -143,7 +143,7 @@ function init() {
       cell.disabled = false;
     }
   });
-  if (modal) modal.close();
+  modal?.close();
 
   // If computer is X, trigger move automatically on restart
   if (state.computerOpponent === 'X' && state.running) {
@@ -187,7 +187,7 @@ function makeMove(index) {
     if (resultModalMsg) resultModalMsg.textContent = winMsg;
     if (cells) winningCombo.forEach(idx => cells[idx]?.classList.add('winning-cell'));
     if (!state.isMuted) playSound(winSound);
-    if (modal) modal.showModal();
+    modal?.showModal();
     recordGameResult(winMsg);
     return;
   }
@@ -197,7 +197,7 @@ function makeMove(index) {
     const drawMsg = "It's a Draw!";
     if (statusEl) statusEl.textContent = drawMsg;
     if (resultModalMsg) resultModalMsg.textContent = drawMsg;
-    if (modal) modal.showModal();
+    modal?.showModal();
     recordGameResult(drawMsg);
     return;
   }
@@ -274,7 +274,7 @@ clearHistoryBtn?.addEventListener('click', clearHistory);
 muteToggleBtn?.addEventListener('click', toggleMute);
 welcomeStartBtn?.addEventListener('click', handleWelcomeStart);
 
-if (welcomeModal) welcomeModal.showModal();
+welcomeModal?.showModal();
 updateMuteButtonUI();
 init();
 loadScoreboard();
