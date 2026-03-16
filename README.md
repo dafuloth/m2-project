@@ -24,6 +24,15 @@ The game history is a table that records the date and time of each game and the 
 
 ### Wireframes
 
+I created some wireframes using Google Nano Banana.
+
+#### Mobile
+![mobile wireframes](docs/mobile-wireframes.png)
+
+#### Desktop
+![desktop wireframes](docs/desktop-wireframes.png)
+
+
 
 ### Colour scheme & Accessibility
 
